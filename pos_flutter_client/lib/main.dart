@@ -4,6 +4,7 @@ import 'package:pos_flutter_client/common/getx_common.dart';
 import 'package:pos_flutter_client/data/random_provider_impl.dart';
 import 'package:pos_flutter_client/domain/get_random_number_usecase.dart';
 import 'package:pos_flutter_client/domain/random_provider.dart';
+import 'package:pos_flutter_client/presentation/home/controller/home_controller.dart';
 
 void main() {
   // DI
@@ -35,17 +36,10 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class Controller extends GetxController {
-  final GetRandomNumberUseCase getRandomNumberUseCase = Get.find();
-  var count = 0.obs;
 
-  void increment() async {
-    count.value = await getRandomNumberUseCase.run();
-  }
-}
 
 class Home extends StatelessWidget {
-  final Controller controller = Controller();
+  final HomeController controller = HomeController();
 
   @override
   Widget build(BuildContext context) {
@@ -55,10 +49,10 @@ class Home extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            GetXWrapBuilder<Controller>(
+            GetXWrapBuilder<HomeController>(
               initController: controller,
               builder: (_) => Text(
-                'clicks: ${controller.count}',
+                'clicks: ${controller.counterModelRx.value.count}',
               ),
             ),
             ElevatedButton(
@@ -66,7 +60,7 @@ class Home extends StatelessWidget {
               onPressed: () {
                 Get.to(
                   Second(
-                    count: controller.count.value,
+                    count: controller.counterModelRx.value.count,
                   ),
                 );
               },
