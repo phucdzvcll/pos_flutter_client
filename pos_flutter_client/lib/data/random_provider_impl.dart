@@ -1,4 +1,4 @@
-import 'package:pos_flutter_client/domain/random_provider.dart';
+import 'package:pos_flutter_client/domain/provider/random_provider.dart';
 
 class RandomProviderImpl extends RandomProvider {
   @override

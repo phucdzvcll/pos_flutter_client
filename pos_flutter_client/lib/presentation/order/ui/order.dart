@@ -1,14 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pos_flutter_client/common/getx_common.dart';
+import 'package:pos_flutter_client/presentation/order/controller/models/category.dart';
 import 'package:pos_flutter_client/presentation/order/controller/models/item.dart';
+import 'package:pos_flutter_client/presentation/order/controller/models/order_state.dart';
+import 'package:pos_flutter_client/presentation/order/controller/order_controller.dart';
 
 class Order extends StatelessWidget {
-  Order({Key? key}) : super(key: key);
+  final OrderController orderController = OrderController();
 
   @override
   Widget build(BuildContext context) {
-    String dropdownValue = 'One';
+    orderController.getListOrders();
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -63,12 +67,12 @@ class Order extends StatelessWidget {
               ),
               onPressed: () {}),
         ),
-        body: _body(dropdownValue, context),
+        body: _body(context, orderController),
       ),
     );
   }
 
-  Widget _body(String _dropdownValue, BuildContext context) {
+  Widget _body(BuildContext context, OrderController orderController) {
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -76,15 +80,45 @@ class Order extends StatelessWidget {
           padding: EdgeInsets.all(15),
           child: _buttonOrder(),
         ),
-        _dropMenuCategory(_dropdownValue),
+        GetXWrapBuilder<OrderController>(
+            initController: orderController,
+            builder: (_) => _dropDown(orderController.categoryRx.value)),
         Expanded(
-          child: ListView(
-            children:
-                providerListItem().map((item) => itemOrder(item)).toList(),
+          child: GetXWrapBuilder<OrderController>(
+            initController: orderController,
+            builder: (_) => _buildState(orderController.orderStateRx.value),
           ),
         )
       ],
     );
+  }
+
+  _buildState(OrderState orderState) {
+    if (orderState is LoadingOrderState) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    } else if (orderState is SuccessOrderState) {
+      return ListView(
+        children: orderState.items.map((item) => itemOrder(item)).toList(),
+      );
+    } else {
+      return Center(
+        child: Text("Error"),
+      );
+    }
+  }
+
+  Color _categoryColor(String categoryName) {
+    if (categoryName == "One") {
+      return Colors.red;
+    } else if (categoryName == "Two") {
+      return Colors.blue;
+    } else if (categoryName == "Three") {
+      return Colors.black;
+    } else {
+      return Colors.green;
+    }
   }
 
   Widget itemOrder(Item item) {
@@ -127,6 +161,25 @@ class Order extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
+                    "Category: ${item.category}",
+                    style: TextStyle(
+                      color: _categoryColor(item.category),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            DecoratedBox(
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(color: Colors.grey, width: 0.5),
+                ),
+              ),
+              child: Padding(
+                padding: EdgeInsets.only(right: 20),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
                     item.cost.toStringAsFixed(1),
                   ),
                 ),
@@ -138,7 +191,14 @@ class Order extends StatelessWidget {
     );
   }
 
-  DecoratedBox _dropMenuCategory(String _dropdownValue) {
+  var _listCategories = [
+    Category(name: 'One'),
+    Category(name: 'Two'),
+    Category(name: 'Three'),
+    Category(name: 'Four')
+  ];
+
+  Widget _dropDown(Category category) {
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey, width: 0.5),
@@ -146,39 +206,40 @@ class Order extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: DropdownButton(
-                value: _dropdownValue,
-                underline: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Color(0x00000000),
-                  ),
+            child: DropdownButton<Category>(
+              onChanged: (Category? category) {
+                if (category != null) {
+                  orderController.fillByCategory(category.name);
+                }
+              },
+              underline: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: Color(0x00000000),
                 ),
-                icon: Padding(
-                  padding: EdgeInsets.only(right: 20),
-                  child: Icon(
-                    Icons.expand_more_outlined,
-                  ),
+              ),
+              icon: Padding(
+                padding: EdgeInsets.only(right: 20),
+                child: Icon(
+                  Icons.expand_more_outlined,
                 ),
-                iconSize: 24,
-                isExpanded: true,
-                style: const TextStyle(color: Colors.black),
-                onChanged: (newValue) {
-                  //send value
-                },
-                items: ['One', 'Two', 'Free', 'Four']
-                    .map(
-                      (category) => DropdownMenuItem(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 10),
-                          child: Text(
-                            category,
-                            style: TextStyle(color: Colors.black, fontSize: 16),
-                          ),
-                        ),
-                        value: category,
-                      ),
-                    )
-                    .toList()),
+              ),
+              iconSize: 24,
+              style: TextStyle(color: Colors.black),
+              isExpanded: true,
+              value: category,
+              items: _listCategories.map((Category category) {
+                return DropdownMenuItem<Category>(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Text(
+                      category.name,
+                      style: TextStyle(color: Colors.black, fontSize: 16),
+                    ),
+                  ),
+                  value: category,
+                );
+              }).toList(),
+            ),
           ),
           DecoratedBox(
             decoration: BoxDecoration(
@@ -201,7 +262,7 @@ class Order extends StatelessWidget {
       children: [
         Expanded(
           child: SizedBox(
-            height: 70,
+            height: 64,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 primary: Color(0xff7CB342),
@@ -219,7 +280,7 @@ class Order extends StatelessWidget {
         ),
         Expanded(
             child: SizedBox(
-          height: 70,
+          height: 64,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
               primary: Color(0xff7CB342),

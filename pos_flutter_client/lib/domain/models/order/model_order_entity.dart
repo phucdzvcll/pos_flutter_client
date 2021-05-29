@@ -1,28 +1,30 @@
-class Item {
+import 'dart:math';
+
+class ModelOrderEntity {
   final String name;
   final String imgUrl;
   final String category;
   final double cost;
 
-  const Item(
-      {required this.name,
+  const ModelOrderEntity(
+      {required this.category,
+      required this.name,
       required this.imgUrl,
-      required this.category,
       required this.cost});
 
-  Item copyWith(
+  ModelOrderEntity copyWith(
       {String? name, String? imgUrl, String? category, double? cost}) {
-    return Item(
+    return ModelOrderEntity(
         name: name ?? this.name,
-        category: category ?? this.category,
         imgUrl: imgUrl ?? this.imgUrl,
+        category: category ?? this.category,
         cost: cost ?? this.cost);
   }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Item &&
+      (other is ModelOrderEntity &&
           other.runtimeType == runtimeType &&
           cost == other.cost &&
           category == other.category &&
@@ -31,4 +33,21 @@ class Item {
 
   @override
   int get hashCode => super.hashCode;
+}
+
+List<ModelOrderEntity> providerListItem() {
+  List<ModelOrderEntity> items = [];
+  Random costR = new Random();
+  for (var i = 0; i <= 30; i++) {
+    items.add(
+      ModelOrderEntity(
+        name: "item ${i + 1}",
+        category: "",
+        imgUrl: "https://picsum.photos/100/100",
+        cost: (costR.nextDouble() + 0.1) * 10,
+      ),
+    );
+  }
+
+  return items;
 }
