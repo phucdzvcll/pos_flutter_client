@@ -1,13 +1,20 @@
 import 'package:get/get.dart';
+import 'package:pos_flutter_client/domain/common/use_case.dart';
 import 'package:pos_flutter_client/domain/get_random_number_usecase.dart';
-import 'package:pos_flutter_client/presentation/home/controller/models/counter_model.dart';
+
+import 'models/counter_model.dart';
+import 'models/home_state.dart';
 
 class HomeController extends GetxController {
   final GetRandomNumberUseCase getRandomNumberUseCase = Get.find();
-  var counterModelRx = CounterModel(count: 0).obs;
+  var homeStateRx = Rx<HomeState>(LoadingHomeState());
 
   void increment() async {
-    var count = await getRandomNumberUseCase.run();
-    counterModelRx.value = counterModelRx.value.copyWith(count: count);
+    var count = await getRandomNumberUseCase.execute(EmptyInput());
+    if(count.isSuccess) {
+      homeStateRx.value = SuccessHomeState(counterModel: CounterModel(count: count.success));
+    } else {
+      homeStateRx.value = ErrorHomeState();
+    }
   }
 }
