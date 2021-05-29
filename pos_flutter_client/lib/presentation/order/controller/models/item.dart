@@ -5,7 +5,26 @@ class Item {
   final String imgUrl;
   final double cost;
 
-  Item({required this.name, required this.imgUrl, required this.cost});
+  const Item({required this.name, required this.imgUrl, required this.cost});
+
+  Item copyWith({String? name, String? imgUrl, double? cost}) {
+    return Item(
+        name: name ?? this.name,
+        imgUrl: imgUrl ?? this.imgUrl,
+        cost: cost ?? this.cost);
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Item &&
+          other.runtimeType == runtimeType &&
+          cost == other.cost &&
+          imgUrl == other.imgUrl &&
+          name == other.name);
+
+  @override
+  int get hashCode => super.hashCode;
 }
 
 List<Item> providerListItem() {
