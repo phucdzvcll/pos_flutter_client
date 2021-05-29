@@ -6,6 +6,7 @@ import 'package:pos_flutter_client/domain/get_random_number_usecase.dart';
 import 'package:pos_flutter_client/domain/random_provider.dart';
 import 'package:pos_flutter_client/presentation/home/controller/home_controller.dart';
 import 'package:pos_flutter_client/presentation/home/controller/models/home_state.dart';
+import 'package:pos_flutter_client/presentation/order/ui/Order.dart';
 
 void main() {
   // DI
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Home(),
+      home: Order(),
     );
   }
 }
