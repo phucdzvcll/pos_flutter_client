@@ -8,6 +8,6 @@ class HomeController extends GetxController {
 
   void increment() async {
     var count = await getRandomNumberUseCase.run();
-    counterModelRx.value = CounterModel(count: count);
+    counterModelRx.value = counterModelRx.value.copyWith(count: count);
   }
 }
