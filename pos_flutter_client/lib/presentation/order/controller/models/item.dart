@@ -12,10 +12,13 @@ List<Item> providerListItem() {
   List<Item> items = [];
   Random costR = new Random();
   for (var i = 0; i <= 30; i++) {
-    items.add(Item(
+    items.add(
+      Item(
         name: "item ${i + 1}",
         imgUrl: "https://picsum.photos/100/100",
-        cost: costR.nextDouble().truncateToDouble()));
+        cost: (costR.nextDouble() + 0.1) * 10,
+      ),
+    );
   }
 
   return items;
