@@ -1,10 +1,6 @@
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:pos_flutter_client/domain/domain.dart';
-import 'package:pos_flutter_client/presentation/order/controller/models/category.dart';
-import 'package:pos_flutter_client/presentation/order/controller/order_state.dart';
-
-import 'models/item.dart';
+import 'package:pos_flutter_client/presentation/order/order.dart';
 
 class OrderController extends GetxController {
   final GetOrderUseCase getOrderUseCase = Get.find();

@@ -2,10 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pos_flutter_client/common/getx_common.dart';
-import 'package:pos_flutter_client/presentation/order/controller/models/category.dart';
-import 'package:pos_flutter_client/presentation/order/controller/models/item.dart';
-import 'package:pos_flutter_client/presentation/order/controller/order_controller.dart';
-import 'package:pos_flutter_client/presentation/order/controller/order_state.dart';
+
+import '../controller/models/category.dart';
+import '../controller/models/item.dart';
+import '../controller/order_controller.dart';
+import '../controller/order_state.dart';
 
 class Order extends StatelessWidget {
   final OrderController orderController = OrderController();

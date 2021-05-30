@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pos_flutter_client/common/getx_common.dart';
-import 'package:pos_flutter_client/data/order_provider_impl.dart';
-import 'package:pos_flutter_client/data/random_provider_impl.dart';
-import 'package:pos_flutter_client/domain/use_case/get_order_usecase.dart';
-import 'package:pos_flutter_client/domain/use_case/get_random_number_usecase.dart';
-import 'package:pos_flutter_client/presentation/home/controller/home_controller.dart';
-import 'package:pos_flutter_client/presentation/home/controller/models/home_state.dart';
-import 'package:pos_flutter_client/presentation/order/ui/order.dart';
+import 'package:pos_flutter_client/data/data.dart';
+import 'package:pos_flutter_client/domain/domain.dart';
 
-import 'domain/repository/order_provider.dart';
-import 'domain/repository/random_provider.dart';
+import 'common/common.dart';
+import 'presentation/presentation.dart';
 
 void main() {
   // DI

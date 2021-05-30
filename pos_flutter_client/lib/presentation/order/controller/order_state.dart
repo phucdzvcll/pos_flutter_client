@@ -1,5 +1,5 @@
-import 'package:pos_flutter_client/presentation/order/controller/models/category.dart';
-import 'package:pos_flutter_client/presentation/order/controller/models/item.dart';
+import '../controller/models/category.dart';
+import '../controller/models/item.dart';
 
 abstract class OrderItemsState {}
 
