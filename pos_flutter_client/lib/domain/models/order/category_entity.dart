@@ -1,17 +1,17 @@
-class Category {
+class CategoryEntity {
   final String name;
   final String color;
   final int id;
 
 //<editor-fold desc="Data Methods" defaultstate="collapsed">
 
-  const Category({
+  const CategoryEntity({
     required this.name,
     required this.color,
     required this.id,
   });
 
-  Category copyWith({
+  CategoryEntity copyWith({
     String? name,
     String? color,
     int? id,
@@ -22,7 +22,7 @@ class Category {
       return this;
     }
 
-    return new Category(
+    return new CategoryEntity(
       name: name ?? this.name,
       color: color ?? this.color,
       id: id ?? this.id,
@@ -31,13 +31,13 @@ class Category {
 
   @override
   String toString() {
-    return 'Category{name: $name, color: $color, id: $id}';
+    return 'CategoryEntity{name: $name, color: $color, id: $id}';
   }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Category &&
+      (other is CategoryEntity &&
           runtimeType == other.runtimeType &&
           name == other.name &&
           color == other.color &&

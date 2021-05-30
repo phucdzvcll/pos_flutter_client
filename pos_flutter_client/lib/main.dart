@@ -3,13 +3,14 @@ import 'package:get/get.dart';
 import 'package:pos_flutter_client/common/getx_common.dart';
 import 'package:pos_flutter_client/data/order_provider_impl.dart';
 import 'package:pos_flutter_client/data/random_provider_impl.dart';
-import 'package:pos_flutter_client/domain/provider/order_provider.dart';
-import 'package:pos_flutter_client/domain/provider/random_provider.dart';
 import 'package:pos_flutter_client/domain/use_case/get_order_usecase.dart';
 import 'package:pos_flutter_client/domain/use_case/get_random_number_usecase.dart';
 import 'package:pos_flutter_client/presentation/home/controller/home_controller.dart';
 import 'package:pos_flutter_client/presentation/home/controller/models/home_state.dart';
 import 'package:pos_flutter_client/presentation/order/ui/order.dart';
+
+import 'domain/repository/order_provider.dart';
+import 'domain/repository/random_provider.dart';
 
 void main() {
   // DI
@@ -21,7 +22,7 @@ void main() {
 void _initDi() {
   //data
   //singleton
-  Get.put<OrderProvider>(OrderProviderImpl());
+  Get.put<OrderRepository>(OrderRepositoryImpl());
   Get.put<RandomProvider>(RandomProviderImpl());
 
   //domain

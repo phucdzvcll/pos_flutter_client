@@ -3,54 +3,53 @@ import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:pos_flutter_client/domain/common/use_case.dart';
 import 'package:pos_flutter_client/domain/use_case/get_order_usecase.dart';
 import 'package:pos_flutter_client/presentation/order/controller/models/category.dart';
-import 'package:pos_flutter_client/presentation/order/controller/models/order_state.dart';
+import 'package:pos_flutter_client/presentation/order/controller/order_state.dart';
 
 import 'models/item.dart';
 
 class OrderController extends GetxController {
   final GetOrderUseCase getOrderUseCase = Get.find();
-  var orderStateRx = Rx<OrderState>(LoadingOrderState());
-  var categoryRx = Rx<Category>(Category(name: "One"));
-  List<Item> items = [];
-
+  var orderStateRx = Rx<OrderItemsState>(LoadingOrderState());
+  var categoryRx = Rx<CategoriesState>(CategoriesState(
+      categories: [Category(name: "All", color: '#ffffff', id: 0)],
+      selectedCategoryId: 0));
+  List<Item> _items = [];
+  List<Category> _categories = [];
   void getListOrders() async {
+    _items.clear();
+    _categories.clear();
+    _categories.add(Category(name: "All", color: '#ffffff', id: 0));
     var result = await getOrderUseCase.execute(EmptyInput());
-    items = result.success
-        .map((orderModelEntity) => Item(
-              imgUrl: orderModelEntity.imgUrl,
-              category: orderModelEntity.category,
-              cost: orderModelEntity.cost,
-              name: orderModelEntity.name,
-            ))
-        .toList();
     if (result.isSuccess) {
-      orderStateRx.value = SuccessOrderState(items: items);
-    } else {
-      orderStateRx.value = ErrorOrderState();
-    }
-  }
-
-  void fillByCategory(String? category) async {
-    if (items.isEmpty) {
-      var result = await getOrderUseCase.execute(EmptyInput());
-      items = result.success
+      _items = result.success.products
           .map((orderModelEntity) => Item(
                 imgUrl: orderModelEntity.imgUrl,
-                category: orderModelEntity.category,
-                cost: orderModelEntity.cost,
+                categoryId: orderModelEntity.category.id,
+                cost: orderModelEntity.price,
                 name: orderModelEntity.name,
               ))
           .toList();
-      if (result.isSuccess) {
-        orderStateRx.value = SuccessOrderState(
-            items: items.where((item) => item.category == category).toList());
-      } else {
-        orderStateRx.value = ErrorOrderState();
-      }
+      var categoriesResult = result.success.categories
+          .map((category) => Category(
+              name: category.name, color: category.color, id: category.id))
+          .toList();
+      _categories.addAll(categoriesResult);
+      orderStateRx.value = SuccessOrderState(items: _items);
+    } else {
+      orderStateRx.value = ErrorOrderState();
+    }
+    categoryRx.value =
+        CategoriesState(categories: _categories, selectedCategoryId: 0);
+  }
+
+  void fillByCategory(int id) async {
+    if (id == 0) {
+      orderStateRx.value = SuccessOrderState(items: _items.toList());
     } else {
       orderStateRx.value = SuccessOrderState(
-          items: items.where((item) => item.category == category).toList());
+          items: _items.where((item) => item.categoryId == id).toList());
     }
-    categoryRx.value = Category(name: category ?? "One");
+    categoryRx.value =
+        CategoriesState(categories: _categories, selectedCategoryId: id);
   }
 }

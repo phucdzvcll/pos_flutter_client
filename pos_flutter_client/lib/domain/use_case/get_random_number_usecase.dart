@@ -1,8 +1,8 @@
 import 'package:pos_flutter_client/domain/common/either.dart';
 import 'package:pos_flutter_client/domain/common/failure.dart';
+import 'package:pos_flutter_client/domain/repository/random_provider.dart';
 
 import '../common/use_case.dart';
-import '../provider/random_provider.dart';
 
 class GetRandomNumberUseCase extends BaseUseCase<EmptyInput, int> {
   final RandomProvider randomProvider;

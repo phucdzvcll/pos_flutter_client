@@ -4,8 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pos_flutter_client/common/getx_common.dart';
 import 'package:pos_flutter_client/presentation/order/controller/models/category.dart';
 import 'package:pos_flutter_client/presentation/order/controller/models/item.dart';
-import 'package:pos_flutter_client/presentation/order/controller/models/order_state.dart';
 import 'package:pos_flutter_client/presentation/order/controller/order_controller.dart';
+import 'package:pos_flutter_client/presentation/order/controller/order_state.dart';
 
 class Order extends StatelessWidget {
   final OrderController orderController = OrderController();
@@ -93,7 +93,7 @@ class Order extends StatelessWidget {
     );
   }
 
-  _buildState(OrderState orderState) {
+  _buildState(OrderItemsState orderState) {
     if (orderState is LoadingOrderState) {
       return Center(
         child: CircularProgressIndicator(),
@@ -106,18 +106,6 @@ class Order extends StatelessWidget {
       return Center(
         child: Text("Error"),
       );
-    }
-  }
-
-  Color _categoryColor(String categoryName) {
-    if (categoryName == "One") {
-      return Colors.red;
-    } else if (categoryName == "Two") {
-      return Colors.blue;
-    } else if (categoryName == "Three") {
-      return Colors.black;
-    } else {
-      return Colors.green;
     }
   }
 
@@ -161,10 +149,7 @@ class Order extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    "Category: ${item.category}",
-                    style: TextStyle(
-                      color: _categoryColor(item.category),
-                    ),
+                    "Category: ${item.categoryId}",
                   ),
                 ),
               ),
@@ -191,14 +176,8 @@ class Order extends StatelessWidget {
     );
   }
 
-  var _listCategories = [
-    Category(name: 'One'),
-    Category(name: 'Two'),
-    Category(name: 'Three'),
-    Category(name: 'Four')
-  ];
-
-  Widget _dropDown(Category category) {
+  Widget _dropDown(CategoriesState categoriesState) {
+    print("loooooooooggggggggggggggggggggggg  $categoriesState");
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey, width: 0.5),
@@ -206,10 +185,10 @@ class Order extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: DropdownButton<Category>(
-              onChanged: (Category? category) {
-                if (category != null) {
-                  orderController.fillByCategory(category.name);
+            child: DropdownButton<int>(
+              onChanged: (int? id) {
+                if (id != null) {
+                  orderController.fillByCategory(id);
                 }
               },
               underline: DecoratedBox(
@@ -226,9 +205,9 @@ class Order extends StatelessWidget {
               iconSize: 24,
               style: TextStyle(color: Colors.black),
               isExpanded: true,
-              value: category,
-              items: _listCategories.map((Category category) {
-                return DropdownMenuItem<Category>(
+              value: categoriesState.selectedCategoryId,
+              items: categoriesState.categories.map((Category category) {
+                return DropdownMenuItem<int>(
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Text(
@@ -236,7 +215,7 @@ class Order extends StatelessWidget {
                       style: TextStyle(color: Colors.black, fontSize: 16),
                     ),
                   ),
-                  value: category,
+                  value: category.id,
                 );
               }).toList(),
             ),
@@ -308,3 +287,20 @@ class Order extends StatelessWidget {
     );
   }
 }
+//
+// extension HexColor on Color {
+//   /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".
+//   static Color fromHex(String hexString) {
+//     final buffer = StringBuffer();
+//     if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
+//     buffer.write(hexString.replaceFirst('#', ''));
+//     return Color(int.parse(buffer.toString(), radix: 16));
+//   }
+//
+//   /// Prefixes a hash sign if [leadingHashSign] is set to `true` (default is `true`).
+//   String toHex({bool leadingHashSign = true}) => '${leadingHashSign ? '#' : ''}'
+//       '${alpha.toRadixString(16).padLeft(2, '0')}'
+//       '${red.toRadixString(16).padLeft(2, '0')}'
+//       '${green.toRadixString(16).padLeft(2, '0')}'
+//       '${blue.toRadixString(16).padLeft(2, '0')}';
+// }

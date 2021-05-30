@@ -1,20 +1,19 @@
 class Item {
   final String name;
   final String imgUrl;
-  final String category;
+  final int categoryId;
   final double cost;
 
   const Item(
       {required this.name,
       required this.imgUrl,
-      required this.category,
+      required this.categoryId,
       required this.cost});
 
-  Item copyWith(
-      {String? name, String? imgUrl, String? category, double? cost}) {
+  Item copyWith({String? name, String? imgUrl, int? category, double? cost}) {
     return Item(
         name: name ?? this.name,
-        category: category ?? this.category,
+        categoryId: category ?? this.categoryId,
         imgUrl: imgUrl ?? this.imgUrl,
         cost: cost ?? this.cost);
   }
@@ -25,7 +24,7 @@ class Item {
       (other is Item &&
           other.runtimeType == runtimeType &&
           cost == other.cost &&
-          category == other.category &&
+          categoryId == other.categoryId &&
           imgUrl == other.imgUrl &&
           name == other.name);
 

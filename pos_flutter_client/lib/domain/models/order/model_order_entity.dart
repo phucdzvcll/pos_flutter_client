@@ -1,53 +1,60 @@
-import 'dart:math';
+import 'package:pos_flutter_client/domain/models/order/category_entity.dart';
 
-class ModelOrderEntity {
+class ProductEntity {
   final String name;
   final String imgUrl;
-  final String category;
-  final double cost;
+  final CategoryEntity category;
+  final double price;
 
-  const ModelOrderEntity(
-      {required this.category,
-      required this.name,
-      required this.imgUrl,
-      required this.cost});
+//<editor-fold desc="Data Methods" defaultstate="collapsed">
 
-  ModelOrderEntity copyWith(
-      {String? name, String? imgUrl, String? category, double? cost}) {
-    return ModelOrderEntity(
-        name: name ?? this.name,
-        imgUrl: imgUrl ?? this.imgUrl,
-        category: category ?? this.category,
-        cost: cost ?? this.cost);
+  const ProductEntity({
+    required this.name,
+    required this.imgUrl,
+    required this.category,
+    required this.price,
+  });
+
+  ProductEntity copyWith({
+    String? name,
+    String? imgUrl,
+    CategoryEntity? category,
+    double? price,
+  }) {
+    if ((name == null || identical(name, this.name)) &&
+        (imgUrl == null || identical(imgUrl, this.imgUrl)) &&
+        (category == null || identical(category, this.category)) &&
+        (price == null || identical(price, this.price))) {
+      return this;
+    }
+
+    return new ProductEntity(
+      name: name ?? this.name,
+      imgUrl: imgUrl ?? this.imgUrl,
+      category: category ?? this.category,
+      price: price ?? this.price,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'ProductEntity{name: $name, imgUrl: $imgUrl, category: $category, price: $price}';
   }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is ModelOrderEntity &&
-          other.runtimeType == runtimeType &&
-          cost == other.cost &&
-          category == other.category &&
+      (other is ProductEntity &&
+          runtimeType == other.runtimeType &&
+          name == other.name &&
           imgUrl == other.imgUrl &&
-          name == other.name);
+          category == other.category &&
+          price == other.price);
 
   @override
-  int get hashCode => super.hashCode;
-}
+  int get hashCode =>
+      name.hashCode ^ imgUrl.hashCode ^ category.hashCode ^ price.hashCode;
 
-List<ModelOrderEntity> providerListItem() {
-  List<ModelOrderEntity> items = [];
-  Random costR = new Random();
-  for (var i = 0; i <= 30; i++) {
-    items.add(
-      ModelOrderEntity(
-        name: "item ${i + 1}",
-        category: "",
-        imgUrl: "https://picsum.photos/100/100",
-        cost: (costR.nextDouble() + 0.1) * 10,
-      ),
-    );
-  }
+//</editor-fold>
 
-  return items;
 }
