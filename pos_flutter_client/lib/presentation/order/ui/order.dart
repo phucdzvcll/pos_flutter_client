@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:pos_flutter_client/common/getx_common.dart';
+import 'package:pos_flutter_client/presentation/ticket_car/ui/ticket_cart.dart';
 
 import '../controller/models/category.dart';
 import '../controller/models/item.dart';
@@ -20,7 +22,7 @@ class Order extends StatelessWidget {
           backgroundColor: Color(0xff4CAF50),
           title: InkWell(
             onTap: () {
-              //move to ticket screen
+              Get.to(TicKetCart());
             },
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -150,23 +152,7 @@ class Order extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    "Category: ${item.categoryId}",
-                  ),
-                ),
-              ),
-            ),
-            DecoratedBox(
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(color: Colors.grey, width: 0.5),
-                ),
-              ),
-              child: Padding(
-                padding: EdgeInsets.only(right: 20),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    item.cost.toStringAsFixed(1),
+                    item.price.toInt().toStringAsFixed(1),
                   ),
                 ),
               ),

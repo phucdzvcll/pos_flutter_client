@@ -20,7 +20,7 @@ class OrderController extends GetxController {
           .map((orderModelEntity) => Item(
                 imgUrl: orderModelEntity.imgUrl,
                 categoryId: orderModelEntity.category.id,
-                cost: orderModelEntity.price,
+                price: orderModelEntity.price,
                 name: orderModelEntity.name,
               ))
           .toList();
