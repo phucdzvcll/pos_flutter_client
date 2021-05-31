@@ -8,7 +8,9 @@ class OrderController extends GetxController {
   var categoryRx = Rx<CategoriesState>(CategoriesState(
       categories: [Category(name: "All", color: '#ffffff', id: 0)],
       selectedCategoryId: 0));
+  var ticketCartRx = Rx<TicketState>(TicketState(items: []));
   List<Item> _items = [];
+  List<Item> _ticketCartItems = [];
   List<Category> _categories = [];
   void getListOrders() async {
     _items.clear();
@@ -46,5 +48,10 @@ class OrderController extends GetxController {
     }
     categoryRx.value =
         CategoriesState(categories: _categories, selectedCategoryId: id);
+  }
+
+  void addToTicketCart(Item item) {
+    _ticketCartItems.add(item);
+    ticketCartRx.value = TicketState(items: _ticketCartItems);
   }
 }

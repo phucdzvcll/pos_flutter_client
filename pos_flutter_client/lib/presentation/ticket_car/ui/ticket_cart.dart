@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:pos_flutter_client/presentation/order/controller/models/item.dart';
 
 class TicKetCart extends StatelessWidget {
+  final List<Item> itemsCart;
+  TicKetCart({Key? key, required this.itemsCart}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -26,7 +29,7 @@ class TicKetCart extends StatelessWidget {
                     color: Colors.white,
                   ),
                   Text(
-                    "5",
+                    itemsCart.length.toString(),
                     style: TextStyle(fontSize: 15),
                   )
                 ],
@@ -76,9 +79,9 @@ class TicKetCart extends StatelessWidget {
         SliverList(
           delegate: SliverChildBuilderDelegate(
             (BuildContext context, int index) {
-              return _itemCart(listItemCart[index], index, (index + 1) * 22000);
+              return _itemCart(itemsCart[index]);
             },
-            childCount: listItemCart.length,
+            childCount: itemsCart.length,
           ),
         ),
         _rowTax(),
@@ -124,7 +127,7 @@ class TicKetCart extends StatelessWidget {
     );
   }
 
-  Widget _itemCart(String itemName, int amount, int price) {
+  Widget _itemCart(Item item) {
     return Padding(
       padding: EdgeInsets.only(bottom: 5, right: 5, left: 5, top: 5),
       child: IntrinsicHeight(
@@ -134,11 +137,11 @@ class TicKetCart extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                "$itemName  x  ",
+                "${item.name}  x  ",
               ),
-              Expanded(child: Text(amount.toString())),
+              Expanded(child: Text("1")),
               Text(
-                price.toString(),
+                item.price.toString(),
               ),
             ],
           ),
@@ -170,7 +173,7 @@ class TicKetCart extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "40.46",
+                    ((_calculator() * 10) + _calculator()).toString(),
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -201,7 +204,7 @@ class TicKetCart extends StatelessWidget {
                   Expanded(
                     child: Text("Tax"),
                   ),
-                  Text("3.68"),
+                  Text(_calculator().toString()),
                 ],
               ),
             ),
@@ -251,7 +254,7 @@ class TicKetCart extends StatelessWidget {
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
                 Text(
-                  "40.46",
+                  ((_calculator() * 10) + _calculator()).toString(),
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 )
               ],
@@ -260,5 +263,13 @@ class TicKetCart extends StatelessWidget {
         )),
       ],
     );
+  }
+
+  int _calculator() {
+    var tax = 0;
+    itemsCart.forEach((item) {
+      tax += (item.price ~/ 10).toInt();
+    });
+    return tax;
   }
 }

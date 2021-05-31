@@ -20,34 +20,10 @@ class Order extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Color(0xff4CAF50),
-          title: InkWell(
-            onTap: () {
-              Get.to(TicKetCart());
-            },
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text("Ticket"),
-                SizedBox(
-                  width: 10,
-                ),
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    SvgPicture.asset(
-                      'images/ic_receipt.svg',
-                      width: 25,
-                      fit: BoxFit.contain,
-                      color: Colors.white,
-                    ),
-                    Text(
-                      "5",
-                      style: TextStyle(fontSize: 15),
-                    )
-                  ],
-                )
-              ],
-            ),
+          title: GetXWrapBuilder<OrderController>(
+            initController: orderController,
+            builder: (_) =>
+                _ticketCartHeader(orderController.ticketCartRx.value),
           ),
           actions: [
             IconButton(
@@ -71,6 +47,42 @@ class Order extends StatelessWidget {
               onPressed: () {}),
         ),
         body: _body(context, orderController),
+      ),
+    );
+  }
+
+  InkWell _ticketCartHeader(TicketState ticketState) {
+    return InkWell(
+      onTap: () {
+        Get.to(
+          TicKetCart(
+            itemsCart: ticketState.items,
+          ),
+        );
+      },
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text("Ticket"),
+          SizedBox(
+            width: 10,
+          ),
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              SvgPicture.asset(
+                'images/ic_receipt.svg',
+                width: 25,
+                fit: BoxFit.contain,
+                color: Colors.white,
+              ),
+              Text(
+                ticketState.items.length.toString(),
+                style: TextStyle(fontSize: 15),
+              )
+            ],
+          )
+        ],
       ),
     );
   }
@@ -116,7 +128,7 @@ class Order extends StatelessWidget {
     return IntrinsicHeight(
       child: InkWell(
         onTap: () {
-          // event click here
+          orderController.addToTicketCart(item);
         },
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,

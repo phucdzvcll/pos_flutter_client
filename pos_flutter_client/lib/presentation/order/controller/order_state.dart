@@ -22,3 +22,9 @@ class CategoriesState {
     required this.selectedCategoryId,
   });
 }
+
+class TicketState {
+  final List<Item> items;
+
+  TicketState({required this.items});
+}
