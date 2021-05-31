@@ -1,9 +1,13 @@
 import 'dart:math';
 
+import 'package:get/get.dart';
+import 'package:pos_flutter_client/common/common.dart';
 import 'package:pos_flutter_client/domain/models/order/category_entity.dart';
 import 'package:pos_flutter_client/domain/models/order/model_order_entity.dart';
 import 'package:pos_flutter_client/domain/repository/order_provider.dart';
 import 'package:pos_flutter_client/domain/use_case/get_order_usecase.dart';
+
+import '../remote/api_service.dart';
 
 class OrderRepositoryImpl extends OrderRepository {
   List<CategoryEntity> randomCategories() {
@@ -34,8 +38,27 @@ class OrderRepositoryImpl extends OrderRepository {
 
   @override
   Future<GetOrderResult> getListOrder() async {
-    List<CategoryEntity> categories = randomCategories();
+    List<ProductEntity> productsEntity = [];
+    List<CategoryEntity> categoriesEntity = [];
+    ApiService apiService = Get.find();
+    var result = await apiService.getCategories();
+    result.data!.forEach((data) {
+      var categoryEntity = CategoryEntity(
+          name: data.name.defaultEmpty(),
+          color: data.colorCode.defaultEmpty(),
+          id: data.id.defaultZero());
+
+      data.products!.forEach((product) {
+        productsEntity.add(ProductEntity(
+            name: product.name.defaultEmpty(),
+            imgUrl: product.thumbUrl.defaultEmpty(),
+            category: categoryEntity,
+            price: product.price.defaultZero()));
+      });
+      categoriesEntity.add(categoryEntity);
+    });
+    //List<CategoryEntity> categories = randomCategories();
     return GetOrderResult(
-        categories: categories, products: randomProducts(categories));
+        categories: categoriesEntity, products: productsEntity);
   }
 }
