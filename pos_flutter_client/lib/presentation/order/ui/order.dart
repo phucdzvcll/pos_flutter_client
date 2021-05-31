@@ -178,7 +178,6 @@ class Order extends StatelessWidget {
   }
 
   Widget _dropDown(CategoriesState categoriesState) {
-    print("loooooooooggggggggggggggggggggggg  $categoriesState");
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey, width: 0.5),

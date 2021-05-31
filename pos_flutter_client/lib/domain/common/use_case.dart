@@ -1,4 +1,3 @@
-
 import 'either.dart';
 import 'failure.dart';
 
@@ -13,6 +12,5 @@ abstract class BaseUseCase<I, O> {
     }
   }
 }
-
 
 class EmptyInput {}
