@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:pos_flutter_client/common/getx_common.dart';
+import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_controller.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/ui/ticket_cart.dart';
 
 import '../controller/models/category.dart';
@@ -12,6 +13,7 @@ import '../controller/order_state.dart';
 
 class Order extends StatelessWidget {
   final OrderController orderController = OrderController();
+  final TicketCartController ticketCartController = TicketCartController();
 
   @override
   Widget build(BuildContext context) {
@@ -20,10 +22,10 @@ class Order extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Color(0xff4CAF50),
-          title: GetXWrapBuilder<OrderController>(
-            initController: orderController,
+          title: GetXWrapBuilder<TicketCartController>(
+            initController: ticketCartController,
             builder: (_) =>
-                _ticketCartHeader(orderController.ticketCartRx.value),
+                _ticketCartHeader(ticketCartController.ticketCartRx.value),
           ),
           actions: [
             IconButton(
@@ -56,7 +58,7 @@ class Order extends StatelessWidget {
       onTap: () {
         Get.to(
           TicKetCart(
-            itemsCart: ticketState.items,
+            ticketCartController: ticketCartController,
           ),
         );
       },
@@ -94,7 +96,7 @@ class Order extends StatelessWidget {
         GetXWrapBuilder(
             builder: (_) => Padding(
                   padding: EdgeInsets.all(15),
-                  child: _buttonOrder(orderController.ticketCartRx.value),
+                  child: _buttonOrder(ticketCartController.ticketCartRx.value),
                 ),
             initController: orderController),
         GetXWrapBuilder<OrderController>(
@@ -130,7 +132,7 @@ class Order extends StatelessWidget {
     return IntrinsicHeight(
       child: InkWell(
         onTap: () {
-          orderController.addToTicketCart(item);
+          ticketCartController.addToTicketCart(item);
         },
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -2,19 +2,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pos_flutter_client/common/common.dart';
-import 'package:pos_flutter_client/presentation/order/controller/models/item.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/controller/model/ticket.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_controller.dart';
 
 class TicKetCart extends StatelessWidget {
-  final TicketCartController ticketCartController = TicketCartController();
-  final List<Item> itemsCart;
+  final TicketCartController ticketCartController;
 
-  TicKetCart({Key? key, required this.itemsCart}) : super(key: key);
+  TicKetCart({Key? key, required this.ticketCartController}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    ticketCartController.itemsCart(itemsCart);
+    ticketCartController.itemsCart();
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
