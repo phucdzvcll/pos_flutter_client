@@ -1,10 +1,10 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:pos_flutter_client/data/remote/wrapped_response.dart';
 
 part 'category_response.g.dart';
 
 @JsonSerializable()
-class CategoryResponse {
-  final Header? header;
+class CategoryResponse extends WrappedResponse {
   final List<Data>? data;
 
 //<editor-fold desc="Data Methods" defaultstate="collapsed">
@@ -14,7 +14,7 @@ class CategoryResponse {
     return 'CategoryResponse{header: $header, data: $data}';
   }
 
-  CategoryResponse({required this.header, required this.data});
+  CategoryResponse({required this.data});
 
   factory CategoryResponse.fromJson(Map<String, dynamic> json) =>
       _$CategoryResponseFromJson(json);
@@ -78,32 +78,6 @@ class Products {
       _$ProductsFromJson(json);
 
   Map<String, dynamic> toJson() => _$ProductsToJson(this);
-
-//</editor-fold>
-
-}
-
-@JsonSerializable()
-class Header {
-  final bool? isSuccessful;
-  final int? resultCode;
-  final String? resultMessage;
-
-//<editor-fold desc="Data Methods" defaultstate="collapsed">
-
-  @override
-  String toString() {
-    return 'Header{isSuccessful: $isSuccessful, resultCode: $resultCode, resultMessage: $resultMessage}';
-  }
-
-  Header(
-      {required this.isSuccessful,
-      required this.resultCode,
-      required this.resultMessage});
-
-  factory Header.fromJson(Map<String, dynamic> json) => _$HeaderFromJson(json);
-
-  Map<String, dynamic> toJson() => _$HeaderToJson(this);
 
 //</editor-fold>
 

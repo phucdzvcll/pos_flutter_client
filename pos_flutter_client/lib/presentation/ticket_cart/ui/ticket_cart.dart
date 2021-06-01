@@ -1,13 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:pos_flutter_client/common/common.dart';
 import 'package:pos_flutter_client/presentation/order/controller/models/item.dart';
+import 'package:pos_flutter_client/presentation/ticket_cart/controller/model/ticket.dart';
+import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_controller.dart';
 
 class TicKetCart extends StatelessWidget {
+  final TicketCartController ticketCartController = TicketCartController();
   final List<Item> itemsCart;
+
   TicKetCart({Key? key, required this.itemsCart}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
+    ticketCartController.itemsCart(itemsCart);
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -28,10 +35,14 @@ class TicKetCart extends StatelessWidget {
                     fit: BoxFit.contain,
                     color: Colors.white,
                   ),
-                  Text(
-                    itemsCart.length.toString(),
-                    style: TextStyle(fontSize: 15),
-                  )
+                  GetXWrapBuilder(
+                      builder: (_) => Text(
+                            ticketCartController.ticketCartStateRx.value
+                                .totalItem()
+                                .toString(),
+                            style: TextStyle(fontSize: 15),
+                          ),
+                      initController: ticketCartController)
                 ],
               )
             ],
@@ -76,14 +87,18 @@ class TicKetCart extends StatelessWidget {
             ),
           ),
         ),
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (BuildContext context, int index) {
-              return _itemCart(itemsCart[index]);
-            },
-            childCount: itemsCart.length,
-          ),
-        ),
+        GetXWrapBuilder(
+            builder: (_) => SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                      return _itemCart(ticketCartController
+                          .ticketCartStateRx.value.tickets[index]);
+                    },
+                    childCount: ticketCartController
+                        .ticketCartStateRx.value.tickets.length,
+                  ),
+                ),
+            initController: ticketCartController),
         _rowTax(),
         _rowTotal(),
       ],
@@ -127,7 +142,7 @@ class TicKetCart extends StatelessWidget {
     );
   }
 
-  Widget _itemCart(Item item) {
+  Widget _itemCart(Ticket ticket) {
     return Padding(
       padding: EdgeInsets.only(bottom: 5, right: 5, left: 5, top: 5),
       child: IntrinsicHeight(
@@ -137,11 +152,11 @@ class TicKetCart extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                "${item.name}  x  ",
+                "${ticket.item.name}  x  ",
               ),
-              Expanded(child: Text("1")),
+              Expanded(child: Text(ticket.amount.toString())),
               Text(
-                item.price.toString(),
+                (ticket.item.price * ticket.amount).toInt().toString(),
               ),
             ],
           ),
@@ -267,8 +282,9 @@ class TicKetCart extends StatelessWidget {
 
   int _calculator() {
     var tax = 0;
-    itemsCart.forEach((item) {
-      tax += (item.price ~/ 10).toInt();
+    var list = ticketCartController.ticketCartStateRx.value.tickets;
+    list.forEach((item) {
+      tax += ((item.amount * item.item.price) ~/ 10);
     });
     return tax;
   }

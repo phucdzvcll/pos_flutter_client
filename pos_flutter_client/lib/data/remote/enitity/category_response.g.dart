@@ -8,13 +8,12 @@ part of 'category_response.dart';
 
 CategoryResponse _$CategoryResponseFromJson(Map<String, dynamic> json) {
   return CategoryResponse(
-    header: json['header'] == null
-        ? null
-        : Header.fromJson(json['header'] as Map<String, dynamic>),
     data: (json['data'] as List<dynamic>?)
         ?.map((e) => Data.fromJson(e as Map<String, dynamic>))
         .toList(),
-  );
+  )..header = json['header'] == null
+      ? null
+      : Header.fromJson(json['header'] as Map<String, dynamic>);
 }
 
 Map<String, dynamic> _$CategoryResponseToJson(CategoryResponse instance) =>
@@ -57,18 +56,4 @@ Map<String, dynamic> _$ProductsToJson(Products instance) => <String, dynamic>{
       'name': instance.name,
       'price': instance.price,
       'thumbUrl': instance.thumbUrl,
-    };
-
-Header _$HeaderFromJson(Map<String, dynamic> json) {
-  return Header(
-    isSuccessful: json['isSuccessful'] as bool?,
-    resultCode: json['resultCode'] as int?,
-    resultMessage: json['resultMessage'] as String?,
-  );
-}
-
-Map<String, dynamic> _$HeaderToJson(Header instance) => <String, dynamic>{
-      'isSuccessful': instance.isSuccessful,
-      'resultCode': instance.resultCode,
-      'resultMessage': instance.resultMessage,
     };

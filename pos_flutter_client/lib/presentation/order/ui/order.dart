@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:pos_flutter_client/common/getx_common.dart';
-import 'package:pos_flutter_client/presentation/ticket_car/ui/ticket_cart.dart';
+import 'package:pos_flutter_client/presentation/ticket_cart/ui/ticket_cart.dart';
 
 import '../controller/models/category.dart';
 import '../controller/models/item.dart';
@@ -91,10 +91,12 @@ class Order extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
-        Padding(
-          padding: EdgeInsets.all(15),
-          child: _buttonOrder(),
-        ),
+        GetXWrapBuilder(
+            builder: (_) => Padding(
+                  padding: EdgeInsets.all(15),
+                  child: _buttonOrder(orderController.ticketCartRx.value),
+                ),
+            initController: orderController),
         GetXWrapBuilder<OrderController>(
             initController: orderController,
             builder: (_) => _dropDown(orderController.categoryRx.value)),
@@ -234,7 +236,7 @@ class Order extends StatelessWidget {
     );
   }
 
-  Row _buttonOrder() {
+  Row _buttonOrder(TicketState ticketState) {
     return Row(
       children: [
         Expanded(
@@ -256,33 +258,42 @@ class Order extends StatelessWidget {
           ),
         ),
         Expanded(
-            child: SizedBox(
-          height: 64,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              primary: Color(0xff7CB342),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(0),
+          child: SizedBox(
+            height: 64,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Color(0xff7CB342),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(0),
+                ),
+              ),
+              onPressed: () {},
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "CHARGE",
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  Text(
+                    _cartCalculator(ticketState.items).toString(),
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  )
+                ],
               ),
             ),
-            onPressed: () {},
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "CHARGE",
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),
-                Text(
-                  "40.46",
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                )
-              ],
-            ),
           ),
-        )),
+        ),
       ],
     );
+  }
+
+  int _cartCalculator(List<Item> items) {
+    var total = 0;
+    items.forEach((element) {
+      total += element.price.toInt();
+    });
+    return total += total ~/ 10;
   }
 }
 //

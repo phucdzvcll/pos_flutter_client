@@ -8,7 +8,7 @@ part of 'api_service.dart';
 
 class _ApiService implements ApiService {
   _ApiService(this._dio, {this.baseUrl}) {
-    baseUrl ??= 'http://pos.tinyflutterteam.com:8082/pos_api';
+    baseUrl ??= 'http://pos.tinyflutterteam.com:8082/pos_api/';
   }
 
   final Dio _dio;
