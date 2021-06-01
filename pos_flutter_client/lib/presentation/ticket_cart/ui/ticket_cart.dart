@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:pos_flutter_client/common/common.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/controller/model/ticket.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_controller.dart';
+import 'package:pos_flutter_client/presentation/ticket_cart/ui/edit_ticket_cart.dart';
 
 class TicKetCart extends StatelessWidget {
   final TicketCartController ticketCartController;
@@ -12,7 +14,6 @@ class TicKetCart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ticketCartController.itemsCart();
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -33,10 +34,9 @@ class TicKetCart extends StatelessWidget {
                     fit: BoxFit.contain,
                     color: Colors.white,
                   ),
-                  GetXWrapBuilder(
+                  GetXWrapBuilder<TicketCartController>(
                       builder: (_) => Text(
-                            ticketCartController.ticketCartStateRx.value
-                                .totalItem()
+                            ticketCartController.totalRx.value.totalItem
                                 .toString(),
                             style: TextStyle(fontSize: 15),
                           ),
@@ -63,13 +63,16 @@ class TicKetCart extends StatelessWidget {
         body: _home(),
         bottomNavigationBar: Padding(
           padding: EdgeInsets.all(15),
-          child: _buttonOrder(),
+          child: GetXWrapBuilder<TicketCartController>(
+            initController: ticketCartController,
+            builder: (_) => _buttonOrder(
+                ticketCartController.totalRx.value.totalPrice +
+                    ticketCartController.totalRx.value.tax),
+          ),
         ),
       ),
     );
   }
-
-  var listItemCart = ['Black tea', 'Trà đào cam xả', 'Trà chanh', 'Trà vải'];
 
   Widget _home() {
     return CustomScrollView(
@@ -85,20 +88,38 @@ class TicKetCart extends StatelessWidget {
             ),
           ),
         ),
-        GetXWrapBuilder(
+        GetXWrapBuilder<TicketCartController>(
             builder: (_) => SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
-                      return _itemCart(ticketCartController
-                          .ticketCartStateRx.value.tickets[index]);
+                      var itemTicket = ticketCartController
+                          .ticketCartStateRx.value.tickets[index];
+                      return InkWell(
+                        onTap: () {
+                          Get.to(
+                            EditTicketCart(
+                                title: itemTicket.item.name,
+                                ticketCartController: ticketCartController),
+                          );
+                        },
+                        child: _itemCart(itemTicket),
+                      );
                     },
                     childCount: ticketCartController
                         .ticketCartStateRx.value.tickets.length,
                   ),
                 ),
             initController: ticketCartController),
-        _rowTax(),
-        _rowTotal(),
+        GetXWrapBuilder<TicketCartController>(
+          initController: ticketCartController,
+          builder: (_) => _rowTax(ticketCartController.totalRx.value.tax),
+        ),
+        GetXWrapBuilder<TicketCartController>(
+          initController: ticketCartController,
+          builder: (_) => _rowTotal(
+              ticketCartController.totalRx.value.totalPrice +
+                  ticketCartController.totalRx.value.tax),
+        ),
       ],
     );
   }
@@ -146,16 +167,33 @@ class TicKetCart extends StatelessWidget {
       child: IntrinsicHeight(
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                "${ticket.item.name}  x  ",
+              Expanded(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      "${ticket.item.name}  x  ",
+                    ),
+                    Expanded(child: Text(ticket.amount.toString())),
+                    Text(
+                      (ticket.item.price * ticket.amount).toInt().toString(),
+                    ),
+                  ],
+                ),
               ),
-              Expanded(child: Text(ticket.amount.toString())),
-              Text(
-                (ticket.item.price * ticket.amount).toInt().toString(),
-              ),
+              Visibility(
+                child: Text(
+                  ticket.comment.defaultEmpty(),
+                  style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      fontSize: 12,
+                      color: Colors.grey[800]),
+                ),
+                visible: ticket.comment.defaultEmpty() == "" ? false : true,
+              )
             ],
           ),
         ),
@@ -163,7 +201,7 @@ class TicKetCart extends StatelessWidget {
     );
   }
 
-  SliverToBoxAdapter _rowTotal() {
+  SliverToBoxAdapter _rowTotal(double totalPrice) {
     return SliverToBoxAdapter(
       child: Padding(
         padding: EdgeInsets.only(bottom: 35, right: 15, left: 15),
@@ -186,7 +224,7 @@ class TicKetCart extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    ((_calculator() * 10) + _calculator()).toString(),
+                    (totalPrice).toString(),
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -198,7 +236,7 @@ class TicKetCart extends StatelessWidget {
     );
   }
 
-  SliverToBoxAdapter _rowTax() {
+  SliverToBoxAdapter _rowTax(double tax) {
     return SliverToBoxAdapter(
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
@@ -217,7 +255,7 @@ class TicKetCart extends StatelessWidget {
                   Expanded(
                     child: Text("Tax"),
                   ),
-                  Text(_calculator().toString()),
+                  Text(tax.toString()),
                 ],
               ),
             ),
@@ -227,7 +265,7 @@ class TicKetCart extends StatelessWidget {
     );
   }
 
-  Row _buttonOrder() {
+  Row _buttonOrder(double totalPrice) {
     return Row(
       children: [
         Expanded(
@@ -267,7 +305,7 @@ class TicKetCart extends StatelessWidget {
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
                 Text(
-                  ((_calculator() * 10) + _calculator()).toString(),
+                  totalPrice.toString(),
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 )
               ],
@@ -276,14 +314,5 @@ class TicKetCart extends StatelessWidget {
         )),
       ],
     );
-  }
-
-  int _calculator() {
-    var tax = 0;
-    var list = ticketCartController.ticketCartStateRx.value.tickets;
-    list.forEach((item) {
-      tax += ((item.amount * item.item.price) ~/ 10);
-    });
-    return tax;
   }
 }

@@ -4,12 +4,13 @@ class TicketCartState {
   final List<Ticket> tickets;
 
   TicketCartState({required this.tickets});
+}
 
-  int totalItem() {
-    var total = 0;
-    tickets.forEach((element) {
-      total += element.amount;
-    });
-    return total;
-  }
+class TotalState {
+  final double totalPrice;
+  final int totalItem;
+  final double tax;
+
+  TotalState(
+      {required this.totalPrice, required this.totalItem, required this.tax});
 }

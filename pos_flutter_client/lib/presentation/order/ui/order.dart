@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:pos_flutter_client/common/getx_common.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_controller.dart';
+import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_state.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/ui/ticket_cart.dart';
 
 import '../controller/models/category.dart';
@@ -25,7 +26,7 @@ class Order extends StatelessWidget {
           title: GetXWrapBuilder<TicketCartController>(
             initController: ticketCartController,
             builder: (_) =>
-                _ticketCartHeader(ticketCartController.ticketCartRx.value),
+                _ticketCartHeader(ticketCartController.totalRx.value),
           ),
           actions: [
             IconButton(
@@ -53,7 +54,7 @@ class Order extends StatelessWidget {
     );
   }
 
-  InkWell _ticketCartHeader(TicketState ticketState) {
+  InkWell _ticketCartHeader(TotalState totalState) {
     return InkWell(
       onTap: () {
         Get.to(
@@ -79,7 +80,7 @@ class Order extends StatelessWidget {
                 color: Colors.white,
               ),
               Text(
-                ticketState.items.length.toString(),
+                totalState.totalItem.toString(),
                 style: TextStyle(fontSize: 15),
               )
             ],
@@ -93,10 +94,10 @@ class Order extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
-        GetXWrapBuilder(
+        GetXWrapBuilder<OrderController>(
             builder: (_) => Padding(
                   padding: EdgeInsets.all(15),
-                  child: _buttonOrder(ticketCartController.ticketCartRx.value),
+                  child: _buttonOrder(ticketCartController.totalRx.value),
                 ),
             initController: orderController),
         GetXWrapBuilder<OrderController>(
@@ -238,7 +239,7 @@ class Order extends StatelessWidget {
     );
   }
 
-  Row _buttonOrder(TicketState ticketState) {
+  Row _buttonOrder(TotalState totalState) {
     return Row(
       children: [
         Expanded(
@@ -278,7 +279,7 @@ class Order extends StatelessWidget {
                     style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
                   Text(
-                    _cartCalculator(ticketState.items).toString(),
+                    (totalState.totalPrice + totalState.tax).toString(),
                     style: TextStyle(color: Colors.white, fontSize: 16),
                   )
                 ],
@@ -288,14 +289,6 @@ class Order extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  int _cartCalculator(List<Item> items) {
-    var total = 0;
-    items.forEach((element) {
-      total += element.price.toInt();
-    });
-    return total += total ~/ 10;
   }
 }
 //
