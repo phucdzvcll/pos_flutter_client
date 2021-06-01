@@ -161,7 +161,8 @@ class TicKetCart extends StatelessWidget {
 
   Widget _itemCart(Ticket ticket) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 5, right: 5, left: 5, top: 5),
+      padding: EdgeInsets.only(
+          bottom: ticket.comment != null ? 5 : 0, right: 5, left: 5, top: 5),
       child: IntrinsicHeight(
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
@@ -170,7 +171,6 @@ class TicKetCart extends StatelessWidget {
             children: [
               Expanded(
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
                       "${ticket.item.name}  x  ",
@@ -178,17 +178,24 @@ class TicKetCart extends StatelessWidget {
                     Expanded(child: Text(ticket.amount.toString())),
                     Text(
                       ticket.totalPrice().formatDouble(),
+                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),
               ),
               Visibility(
-                child: Text(
-                  ticket.comment.defaultEmpty(),
-                  style: TextStyle(
-                      fontStyle: FontStyle.italic,
-                      fontSize: 12,
-                      color: Colors.grey[800]),
+                child: Padding(
+                  padding: EdgeInsets.only(top: 5),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      (ticket.comment.defaultEmpty()).toLowerCase(),
+                      style: TextStyle(
+                          fontStyle: FontStyle.italic,
+                          fontSize: 12,
+                          color: Colors.grey[800]),
+                    ),
+                  ),
                 ),
                 visible: ticket.comment.defaultEmpty() == "" ? false : true,
               )
