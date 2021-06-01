@@ -36,7 +36,8 @@ class TicKetCart extends StatelessWidget {
                   ),
                   GetXWrapBuilder<TicketCartController>(
                       builder: (_) => Text(
-                            ticketCartController.totalRx.value.totalItem
+                            ticketCartController.ticketCartStateRx.value
+                                .getCountItem()
                                 .toString(),
                             style: TextStyle(fontSize: 15),
                           ),
@@ -66,8 +67,7 @@ class TicKetCart extends StatelessWidget {
           child: GetXWrapBuilder<TicketCartController>(
             initController: ticketCartController,
             builder: (_) => _buttonOrder(
-                ticketCartController.totalRx.value.totalPrice +
-                    ticketCartController.totalRx.value.tax),
+                ticketCartController.ticketCartStateRx.value.getCartAmount()),
           ),
         ),
       ),
@@ -110,13 +110,13 @@ class TicKetCart extends StatelessWidget {
             initController: ticketCartController),
         GetXWrapBuilder<TicketCartController>(
           initController: ticketCartController,
-          builder: (_) => _rowTax(ticketCartController.totalRx.value.tax),
+          builder: (_) =>
+              _rowTax(ticketCartController.ticketCartStateRx.value.tax),
         ),
         GetXWrapBuilder<TicketCartController>(
           initController: ticketCartController,
           builder: (_) => _rowTotal(
-              ticketCartController.totalRx.value.totalPrice +
-                  ticketCartController.totalRx.value.tax),
+              ticketCartController.ticketCartStateRx.value.getCartAmount()),
         ),
       ],
     );

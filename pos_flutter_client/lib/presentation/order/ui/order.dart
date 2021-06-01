@@ -26,7 +26,7 @@ class Order extends StatelessWidget {
           title: GetXWrapBuilder<TicketCartController>(
             initController: ticketCartController,
             builder: (_) =>
-                _ticketCartHeader(ticketCartController.totalRx.value),
+                _ticketCartHeader(ticketCartController.ticketCartStateRx.value),
           ),
           actions: [
             IconButton(
@@ -54,7 +54,7 @@ class Order extends StatelessWidget {
     );
   }
 
-  InkWell _ticketCartHeader(TotalState totalState) {
+  InkWell _ticketCartHeader(TicketCartState ticketCartState) {
     return InkWell(
       onTap: () {
         Get.to(
@@ -80,7 +80,7 @@ class Order extends StatelessWidget {
                 color: Colors.white,
               ),
               Text(
-                totalState.totalItem.toString(),
+                ticketCartState.getCountItem().toString(),
                 style: TextStyle(fontSize: 15),
               )
             ],
@@ -97,7 +97,8 @@ class Order extends StatelessWidget {
         GetXWrapBuilder<OrderController>(
             builder: (_) => Padding(
                   padding: EdgeInsets.all(15),
-                  child: _buttonOrder(ticketCartController.totalRx.value),
+                  child: _buttonOrder(
+                      ticketCartController.ticketCartStateRx.value),
                 ),
             initController: orderController),
         GetXWrapBuilder<OrderController>(
@@ -140,10 +141,17 @@ class Order extends StatelessWidget {
           children: [
             Padding(
               padding: EdgeInsets.all(10),
-              child: CircleAvatar(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(50),
-                  child: Image.network(item.imgUrl),
+              child: SizedBox(
+                width: 54,
+                height: 54,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(27),
+                    border: Border.all(color: Colors.grey, width: 0.25),
+                    image: DecorationImage(
+                      image: NetworkImage(item.imgUrl),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -239,7 +247,7 @@ class Order extends StatelessWidget {
     );
   }
 
-  Row _buttonOrder(TotalState totalState) {
+  Row _buttonOrder(TicketCartState ticketCartState) {
     return Row(
       children: [
         Expanded(
@@ -279,7 +287,7 @@ class Order extends StatelessWidget {
                     style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
                   Text(
-                    (totalState.totalPrice + totalState.tax).toString(),
+                    ticketCartState.getCartAmount().toString(),
                     style: TextStyle(color: Colors.white, fontSize: 16),
                   )
                 ],

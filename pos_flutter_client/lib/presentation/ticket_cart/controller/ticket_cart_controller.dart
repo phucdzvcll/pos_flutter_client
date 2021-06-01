@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:pos_flutter_client/presentation/order/controller/models/item.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/controller/model/ticket.dart';
@@ -6,14 +5,11 @@ import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_ca
 
 class TicketCartController extends GetxController {
   var ticketCartStateRx = Rx<TicketCartState>(
-    TicketCartState(tickets: []),
+    TicketCartState(tickets: [], tax: 0.0),
   );
-  var totalRx = Rx<TotalState>(
-    TotalState(totalItem: 0, totalPrice: 0.0, tax: 0),
-  );
-  var editTicketState = Rx<EditTicketCart>(
-    EditTicketCart(
-      amountController: TextEditingController(text: ""),
+  Ticket? _oldEditTicket;
+  var editTicketStateRx = Rx<EditTicketCartState>(
+    EditTicketCartState(
       ticket: Ticket(
           item: Item(
             categoryId: 0,
@@ -24,43 +20,62 @@ class TicketCartController extends GetxController {
           amount: 0),
     ),
   );
-  var _totalPrice = 0.0;
-  var _totalItem = 0;
-  var _tax = 0.0;
   List<Ticket> _ticketCart = [];
 
   void addToTicketCart(Item item) {
-    _totalItem += 1;
-    _totalPrice += item.price;
-    _tax = _totalPrice / 10;
-    totalRx.value =
-        TotalState(totalItem: _totalItem, totalPrice: _totalPrice, tax: _tax);
-    bool exits = false;
-    for (var i = 0; i < _ticketCart.length; i++) {
-      if (_ticketCart[i].item == item) {
-        var amount = _ticketCart[i].amount + 1;
-        var newTicket = _ticketCart[i].copyWith(amount: amount);
-        _ticketCart[i] = newTicket;
-        exits = true;
-        break;
-      }
-    }
-    if (!exits) {
+    var index = _ticketCart.indexWhere((element) => element.item == item);
+    bool exists = index >= 0;
+    if (exists) {
+      var amount = _ticketCart[index].amount + 1;
+      var newTicket = _ticketCart[index].copyWith(amount: amount);
+      _ticketCart[index] = newTicket;
+    } else {
       _ticketCart.add(Ticket(item: item, amount: 1));
     }
-    ticketCartStateRx.value = TicketCartState(tickets: _ticketCart);
+
+    ticketCartStateRx.value =
+        ticketCartStateRx.value.copyWith(tickets: _ticketCart);
   }
 
   void edit(Ticket ticket) {
-    var amountController =
-        TextEditingController(text: ticket.amount.toString());
-    var commentController = TextEditingController();
-    if (ticket.comment != null) {
-      commentController.text = ticket.comment!;
+    _oldEditTicket = ticket;
+    editTicketStateRx.value = EditTicketCartState(
+      ticket: ticket.copyWith(),
+    );
+  }
+
+  void upAction() {
+    var amount = editTicketStateRx.value.ticket.amount + 1;
+    var newTicket = editTicketStateRx.value.ticket.copyWith(amount: amount);
+    editTicketStateRx.value = EditTicketCartState(
+      ticket: newTicket,
+    );
+  }
+
+  void downAction() {
+    var amount = editTicketStateRx.value.ticket.amount;
+    if (editTicketStateRx.value.ticket.amount > 0) {
+      amount -= 1;
     }
-    editTicketState.value = EditTicketCart(
-        ticket: ticket,
-        amountController: amountController,
-        comment: commentController);
+    var newTicket = editTicketStateRx.value.ticket.copyWith(amount: amount);
+    editTicketStateRx.value = EditTicketCartState(
+      ticket: newTicket,
+    );
+  }
+
+  void saveEdit() {
+    if (_oldEditTicket != null) {
+      var index =
+          _ticketCart.indexWhere((element) => element == _oldEditTicket);
+      if (index >= 0) {
+        if (editTicketStateRx.value.ticket.amount == 0) {
+          _ticketCart.removeAt(index);
+        } else {
+          _ticketCart[index] = editTicketStateRx.value.ticket;
+        }
+        ticketCartStateRx.value =
+            ticketCartStateRx.value.copyWith(tickets: _ticketCart);
+      }
+    }
   }
 }

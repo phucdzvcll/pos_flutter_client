@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pos_flutter_client/common/common.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_controller.dart';
+import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_state.dart';
 
 class EditTicketCart extends StatelessWidget {
   final TicketCartController ticketCartController;
@@ -12,6 +13,10 @@ class EditTicketCart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController commentController = TextEditingController(
+        text: ticketCartController.editTicketStateRx.value.ticket.comment
+            .defaultEmpty()
+            .toString());
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -20,13 +25,16 @@ class EditTicketCart extends StatelessWidget {
           title: GetXWrapBuilder(
             initController: ticketCartController,
             builder: (_) => Text(
-              ticketCartController.editTicketState.value.ticket.item.name,
+              ticketCartController.editTicketStateRx.value.ticket.item.name,
               style: TextStyle(color: Colors.black),
             ),
           ),
           actions: [
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                ticketCartController.saveEdit();
+                Get.back();
+              },
               child: Text(
                 "SAVE",
                 style: TextStyle(color: Colors.green),
@@ -43,12 +51,12 @@ class EditTicketCart extends StatelessWidget {
             },
           ),
         ),
-        body: _body(),
+        body: _body(commentController),
       ),
     );
   }
 
-  Widget _body() {
+  Widget _body(TextEditingController commentController) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -70,7 +78,9 @@ class EditTicketCart extends StatelessWidget {
                 width: 40,
                 height: 40,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    ticketCartController.downAction();
+                  },
                   child: Text(
                     "-",
                     style: TextStyle(fontSize: 22),
@@ -78,27 +88,25 @@ class EditTicketCart extends StatelessWidget {
                 ),
               ),
               Expanded(
-                  child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                child: GetXWrapBuilder(
-                  initController: ticketCartController,
-                  builder: (_) => TextField(
-                    controller: ticketCartController
-                        .editTicketState.value.amountController,
-                    keyboardType: TextInputType.number,
-                    textAlign: TextAlign.center,
-                    onChanged: (value) {
-                      ticketCartController
-                          .editTicketState.value.amountController.text = value;
-                    },
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: GetXWrapBuilder(
+                    initController: ticketCartController,
+                    builder: (_) => Text(
+                      ticketCartController.editTicketStateRx.value.ticket.amount
+                          .toString(),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
-              )),
+              ),
               SizedBox(
                 width: 40,
                 height: 40,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    ticketCartController.upAction();
+                  },
                   child: Text("+"),
                 ),
               )
@@ -118,12 +126,16 @@ class EditTicketCart extends StatelessWidget {
         ),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 10),
-          child: GetXWrapBuilder(
-            initController: ticketCartController,
-            builder: (_) => TextField(
-              controller: ticketCartController.editTicketState.value.comment,
-              decoration: InputDecoration(hintText: "Enter your comment"),
-            ),
+          child: TextField(
+            controller: commentController,
+            decoration: InputDecoration(hintText: "Enter your comment"),
+            onChanged: (value) {
+              var newTicket = ticketCartController
+                  .editTicketStateRx.value.ticket
+                  .copyWith(comment: value);
+              ticketCartController.editTicketStateRx.value =
+                  EditTicketCartState(ticket: newTicket);
+            },
           ),
         )
       ],
