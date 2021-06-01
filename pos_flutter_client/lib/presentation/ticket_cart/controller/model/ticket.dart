@@ -5,6 +5,10 @@ class Ticket {
   final int amount;
   final String? comment;
 
+  double totalPrice() {
+    return this.amount * this.item.price;
+  }
+
 //<editor-fold desc="Data Methods" defaultstate="collapsed">
 
   const Ticket({

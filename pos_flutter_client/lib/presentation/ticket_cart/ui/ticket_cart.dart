@@ -177,7 +177,7 @@ class TicKetCart extends StatelessWidget {
                     ),
                     Expanded(child: Text(ticket.amount.toString())),
                     Text(
-                      (ticket.item.price * ticket.amount).toInt().toString(),
+                      ticket.totalPrice().formatDouble(),
                     ),
                   ],
                 ),
@@ -222,7 +222,7 @@ class TicKetCart extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    (totalPrice).toString(),
+                    totalPrice.formatDouble(),
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -253,7 +253,7 @@ class TicKetCart extends StatelessWidget {
                   Expanded(
                     child: Text("Tax"),
                   ),
-                  Text(tax.toString()),
+                  Text(tax.formatDouble()),
                 ],
               ),
             ),

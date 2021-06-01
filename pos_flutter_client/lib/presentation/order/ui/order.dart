@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:pos_flutter_client/common/getx_common.dart';
+import 'package:pos_flutter_client/common/common.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_controller.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_state.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/ui/ticket_cart.dart';
@@ -177,7 +177,7 @@ class Order extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    item.price.toInt().toStringAsFixed(1),
+                    item.price.formatDouble(),
                   ),
                 ),
               ),
@@ -287,7 +287,7 @@ class Order extends StatelessWidget {
                     style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
                   Text(
-                    ticketCartState.getCartAmount().toString(),
+                    ticketCartState.getCartAmount().formatDouble(),
                     style: TextStyle(color: Colors.white, fontSize: 16),
                   )
                 ],
