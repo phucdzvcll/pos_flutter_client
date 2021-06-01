@@ -96,11 +96,9 @@ class TicKetCart extends StatelessWidget {
                           .ticketCartStateRx.value.tickets[index];
                       return InkWell(
                         onTap: () {
-                          Get.to(
-                            EditTicketCart(
-                                title: itemTicket.item.name,
-                                ticketCartController: ticketCartController),
-                          );
+                          ticketCartController.edit(itemTicket);
+                          Get.to(EditTicketCart(
+                              ticketCartController: ticketCartController));
                         },
                         child: _itemCart(itemTicket),
                       );

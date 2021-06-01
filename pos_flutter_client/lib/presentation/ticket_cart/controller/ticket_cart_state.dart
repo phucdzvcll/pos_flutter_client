@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 import 'model/ticket.dart';
 
 class TicketCartState {
@@ -13,4 +15,12 @@ class TotalState {
 
   TotalState(
       {required this.totalPrice, required this.totalItem, required this.tax});
+}
+
+class EditTicketCart {
+  final Ticket ticket;
+  final TextEditingController amountController;
+  final TextEditingController? comment;
+  EditTicketCart(
+      {required this.ticket, required this.amountController, this.comment});
 }

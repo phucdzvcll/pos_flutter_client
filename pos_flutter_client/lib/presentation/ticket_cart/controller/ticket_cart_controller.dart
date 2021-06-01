@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:pos_flutter_client/presentation/order/controller/models/item.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/controller/model/ticket.dart';
@@ -9,6 +10,19 @@ class TicketCartController extends GetxController {
   );
   var totalRx = Rx<TotalState>(
     TotalState(totalItem: 0, totalPrice: 0.0, tax: 0),
+  );
+  var editTicketState = Rx<EditTicketCart>(
+    EditTicketCart(
+      amountController: TextEditingController(text: ""),
+      ticket: Ticket(
+          item: Item(
+            categoryId: 0,
+            name: "",
+            imgUrl: "",
+            price: 0,
+          ),
+          amount: 0),
+    ),
   );
   var _totalPrice = 0.0;
   var _totalItem = 0;
@@ -35,5 +49,18 @@ class TicketCartController extends GetxController {
       _ticketCart.add(Ticket(item: item, amount: 1));
     }
     ticketCartStateRx.value = TicketCartState(tickets: _ticketCart);
+  }
+
+  void edit(Ticket ticket) {
+    var amountController =
+        TextEditingController(text: ticket.amount.toString());
+    var commentController = TextEditingController();
+    if (ticket.comment != null) {
+      commentController.text = ticket.comment!;
+    }
+    editTicketState.value = EditTicketCart(
+        ticket: ticket,
+        amountController: amountController,
+        comment: commentController);
   }
 }
