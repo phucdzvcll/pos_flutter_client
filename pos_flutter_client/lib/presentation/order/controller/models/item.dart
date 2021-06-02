@@ -2,20 +2,20 @@ class Item {
   final String name;
   final String imgUrl;
   final int categoryId;
-  final double cost;
+  final double price;
 
   const Item(
       {required this.name,
       required this.imgUrl,
       required this.categoryId,
-      required this.cost});
+      required this.price});
 
   Item copyWith({String? name, String? imgUrl, int? category, double? cost}) {
     return Item(
         name: name ?? this.name,
         categoryId: category ?? this.categoryId,
         imgUrl: imgUrl ?? this.imgUrl,
-        cost: cost ?? this.cost);
+        price: cost ?? this.price);
   }
 
   @override
@@ -23,7 +23,7 @@ class Item {
       identical(this, other) ||
       (other is Item &&
           other.runtimeType == runtimeType &&
-          cost == other.cost &&
+          price == other.price &&
           categoryId == other.categoryId &&
           imgUrl == other.imgUrl &&
           name == other.name);

@@ -1,6 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pos_flutter_client/data/data.dart';
+import 'package:pos_flutter_client/data/remote/api_service.dart';
 import 'package:pos_flutter_client/domain/domain.dart';
 
 import 'common/common.dart';
@@ -16,12 +18,21 @@ void main() {
 void _initDi() {
   //data
   //singleton
+  final BaseOptions baseOptions = BaseOptions(
+    connectTimeout: 30000,
+    receiveTimeout: 30000,
+    responseType: ResponseType.json,
+  );
+  final dio = Dio(baseOptions); // Provide a dio instance
+  final client = ApiService(dio);
   Get.put<OrderRepository>(OrderRepositoryImpl());
   Get.put<RandomProvider>(RandomProviderImpl());
+  Get.put<ApiService>(client);
 
   //domain
   //factory
-  Get.create<GetOrderUseCase>(() => GetOrderUseCase(orderProvider: Get.find()));
+  Get.create<GetOrderUseCase>(
+      () => GetOrderUseCase(orderRepository: Get.find()));
   Get.create<GetRandomNumberUseCase>(
       () => GetRandomNumberUseCase(randomProvider: Get.find()));
 }

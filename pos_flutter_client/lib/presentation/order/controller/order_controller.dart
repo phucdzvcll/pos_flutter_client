@@ -10,6 +10,7 @@ class OrderController extends GetxController {
       selectedCategoryId: 0));
   List<Item> _items = [];
   List<Category> _categories = [];
+
   void getListOrders() async {
     _items.clear();
     _categories.clear();
@@ -20,7 +21,7 @@ class OrderController extends GetxController {
           .map((orderModelEntity) => Item(
                 imgUrl: orderModelEntity.imgUrl,
                 categoryId: orderModelEntity.category.id,
-                cost: orderModelEntity.price,
+                price: orderModelEntity.price,
                 name: orderModelEntity.name,
               ))
           .toList();

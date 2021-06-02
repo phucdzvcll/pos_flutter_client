@@ -1,7 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:pos_flutter_client/common/getx_common.dart';
+import 'package:get/get.dart';
+import 'package:pos_flutter_client/common/common.dart';
+import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_controller.dart';
+import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_state.dart';
+import 'package:pos_flutter_client/presentation/ticket_cart/ui/ticket_cart.dart';
 
 import '../controller/models/category.dart';
 import '../controller/models/item.dart';
@@ -10,6 +14,7 @@ import '../controller/order_state.dart';
 
 class Order extends StatelessWidget {
   final OrderController orderController = OrderController();
+  final TicketCartController ticketCartController = TicketCartController();
 
   @override
   Widget build(BuildContext context) {
@@ -18,34 +23,10 @@ class Order extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Color(0xff4CAF50),
-          title: InkWell(
-            onTap: () {
-              //move to ticket screen
-            },
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text("Ticket"),
-                SizedBox(
-                  width: 10,
-                ),
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    SvgPicture.asset(
-                      'images/ic_receipt.svg',
-                      width: 25,
-                      fit: BoxFit.contain,
-                      color: Colors.white,
-                    ),
-                    Text(
-                      "5",
-                      style: TextStyle(fontSize: 15),
-                    )
-                  ],
-                )
-              ],
-            ),
+          title: GetXWrapBuilder<TicketCartController>(
+            initController: ticketCartController,
+            builder: (_) =>
+                _ticketCartHeader(ticketCartController.ticketCartStateRx.value),
           ),
           actions: [
             IconButton(
@@ -73,14 +54,53 @@ class Order extends StatelessWidget {
     );
   }
 
+  InkWell _ticketCartHeader(TicketCartState ticketCartState) {
+    return InkWell(
+      onTap: () {
+        Get.to(
+          TicKetCart(
+            ticketCartController: ticketCartController,
+          ),
+        );
+      },
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text("Ticket"),
+          SizedBox(
+            width: 10,
+          ),
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              SvgPicture.asset(
+                'images/ic_receipt.svg',
+                width: 25,
+                fit: BoxFit.contain,
+                color: Colors.white,
+              ),
+              Text(
+                ticketCartState.getCountItem().toString(),
+                style: TextStyle(fontSize: 15),
+              )
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
   Widget _body(BuildContext context, OrderController orderController) {
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
-        Padding(
-          padding: EdgeInsets.all(15),
-          child: _buttonOrder(),
-        ),
+        GetXWrapBuilder<OrderController>(
+            builder: (_) => Padding(
+                  padding: EdgeInsets.all(15),
+                  child: _buttonOrder(
+                      ticketCartController.ticketCartStateRx.value),
+                ),
+            initController: orderController),
         GetXWrapBuilder<OrderController>(
             initController: orderController,
             builder: (_) => _dropDown(orderController.categoryRx.value)),
@@ -114,17 +134,24 @@ class Order extends StatelessWidget {
     return IntrinsicHeight(
       child: InkWell(
         onTap: () {
-          // event click here
+          ticketCartController.addToTicketCart(item);
         },
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
               padding: EdgeInsets.all(10),
-              child: CircleAvatar(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(50),
-                  child: Image.network(item.imgUrl),
+              child: SizedBox(
+                width: 54,
+                height: 54,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(27),
+                    border: Border.all(color: Colors.grey, width: 0.25),
+                    image: DecorationImage(
+                      image: NetworkImage(item.imgUrl),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -150,23 +177,7 @@ class Order extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    "Category: ${item.categoryId}",
-                  ),
-                ),
-              ),
-            ),
-            DecoratedBox(
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(color: Colors.grey, width: 0.5),
-                ),
-              ),
-              child: Padding(
-                padding: EdgeInsets.only(right: 20),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    item.cost.toStringAsFixed(1),
+                    item.price.formatDouble(),
                   ),
                 ),
               ),
@@ -178,7 +189,6 @@ class Order extends StatelessWidget {
   }
 
   Widget _dropDown(CategoriesState categoriesState) {
-    print("loooooooooggggggggggggggggggggggg  $categoriesState");
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey, width: 0.5),
@@ -237,7 +247,7 @@ class Order extends StatelessWidget {
     );
   }
 
-  Row _buttonOrder() {
+  Row _buttonOrder(TicketCartState ticketCartState) {
     return Row(
       children: [
         Expanded(
@@ -259,31 +269,32 @@ class Order extends StatelessWidget {
           ),
         ),
         Expanded(
-            child: SizedBox(
-          height: 64,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              primary: Color(0xff7CB342),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(0),
+          child: SizedBox(
+            height: 64,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Color(0xff7CB342),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(0),
+                ),
+              ),
+              onPressed: () {},
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "CHARGE",
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  Text(
+                    ticketCartState.getCartAmount().formatDouble(),
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  )
+                ],
               ),
             ),
-            onPressed: () {},
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "CHARGE",
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),
-                Text(
-                  "40.46",
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                )
-              ],
-            ),
           ),
-        )),
+        ),
       ],
     );
   }

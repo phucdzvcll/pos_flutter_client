@@ -7,14 +7,14 @@ import 'package:pos_flutter_client/domain/repository/order_provider.dart';
 import '../common/use_case.dart';
 
 class GetOrderUseCase extends BaseUseCase<EmptyInput, GetOrderResult> {
-  final OrderRepository orderProvider;
+  final OrderRepository orderRepository;
 
-  GetOrderUseCase({required this.orderProvider});
+  GetOrderUseCase({required this.orderRepository});
 
   @override
   Future<Either<Failure, GetOrderResult>> executeInternal(
       EmptyInput input) async {
-    return SuccessValue(await orderProvider.getListOrder());
+    return await orderRepository.getListOrder();
   }
 }
 
