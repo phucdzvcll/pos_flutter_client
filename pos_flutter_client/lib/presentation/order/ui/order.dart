@@ -73,14 +73,21 @@ class Order extends StatelessWidget {
           Stack(
             alignment: Alignment.center,
             children: [
-              SvgPicture.asset(
-                'images/ic_receipt.svg',
-                width: 25,
-                fit: BoxFit.contain,
-                color: Colors.white,
+              SizedBox(
+                width: ticketCartState.getCountItem() < 10
+                    ? 25
+                    : (ticketCartState.getCountItem() < 99 ? 35 : 45),
+                height: 20,
+                child: SvgPicture.asset(
+                  'images/ic_receipt.svg',
+                  fit: BoxFit.fill,
+                  color: Colors.white,
+                ),
               ),
               Text(
-                ticketCartState.getCountItem().toString(),
+                ticketCartState.getCountItem() < 99
+                    ? ticketCartState.getCountItem().toString()
+                    : '99+',
                 style: TextStyle(fontSize: 15),
               )
             ],
