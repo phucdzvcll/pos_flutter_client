@@ -42,14 +42,117 @@ class Order extends StatelessWidget {
                 ),
                 onPressed: () {}),
           ],
-          leading: IconButton(
-              alignment: Alignment.centerLeft,
-              icon: Icon(
-                Icons.view_headline_outlined,
-              ),
-              onPressed: () {}),
+          // leading: IconButton(
+          //     alignment: Alignment.centerLeft,
+          //     icon: Icon(
+          //       Icons.view_headline_outlined,
+          //     ),
+          //     onPressed: () {}),
         ),
+        drawer: _drawer(context),
         body: _body(context, orderController),
+      ),
+    );
+  }
+
+  Drawer _drawer(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        children: <Widget>[
+          DecoratedBox(
+            decoration: BoxDecoration(color: Colors.green),
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
+              child: SizedBox(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      'phuc tran',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24),
+                    ),
+                    Text(
+                      'POS 1',
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                    Text(
+                      'p5k',
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.shopping_basket,
+            ),
+            title: Text('Sale'),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.receipt,
+            ),
+            title: Text('Receipts'),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.list,
+            ),
+            title: Text('Items'),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.settings),
+            title: Text('Setting'),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+          Divider(
+            color: Colors.black45,
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.insert_chart,
+            ),
+            title: Text('Black office'),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.redeem,
+            ),
+            title: Text('App'),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.help_outline,
+            ),
+            title: Text('Help'),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          )
+        ],
       ),
     );
   }
@@ -73,14 +176,21 @@ class Order extends StatelessWidget {
           Stack(
             alignment: Alignment.center,
             children: [
-              SvgPicture.asset(
-                'images/ic_receipt.svg',
-                width: 25,
-                fit: BoxFit.contain,
-                color: Colors.white,
+              SizedBox(
+                width: ticketCartState.getCountItem() < 10
+                    ? 25
+                    : (ticketCartState.getCountItem() < 99 ? 35 : 45),
+                height: 20,
+                child: SvgPicture.asset(
+                  'images/ic_receipt.svg',
+                  fit: BoxFit.fill,
+                  color: Colors.white,
+                ),
               ),
               Text(
-                ticketCartState.getCountItem().toString(),
+                ticketCartState.getCountItem() < 99
+                    ? ticketCartState.getCountItem().toString()
+                    : '99+',
                 style: TextStyle(fontSize: 15),
               )
             ],

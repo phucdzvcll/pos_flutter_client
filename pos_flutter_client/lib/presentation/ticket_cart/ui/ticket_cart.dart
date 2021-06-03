@@ -25,24 +25,36 @@ class TicKetCart extends StatelessWidget {
               SizedBox(
                 width: 10,
               ),
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  SvgPicture.asset(
-                    'images/ic_receipt.svg',
-                    width: 25,
-                    fit: BoxFit.contain,
-                    color: Colors.white,
-                  ),
-                  GetXWrapBuilder<TicketCartController>(
-                      builder: (_) => Text(
-                            ticketCartController.ticketCartStateRx.value
-                                .getCountItem()
-                                .toString(),
-                            style: TextStyle(fontSize: 15),
-                          ),
-                      initController: ticketCartController)
-                ],
+              GetXWrapBuilder<TicketCartController>(
+                initController: ticketCartController,
+                builder: (_) => Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    SizedBox(
+                      width: ticketCartController.ticketCartStateRx.value
+                                  .getCountItem() <
+                              10
+                          ? 25
+                          : (ticketCartController.ticketCartStateRx.value
+                                      .getCountItem() <
+                                  99
+                              ? 35
+                              : 45),
+                      height: 20,
+                      child: SvgPicture.asset(
+                        'images/ic_receipt.svg',
+                        fit: BoxFit.fill,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      ticketCartController.ticketCartStateRx.value
+                          .getCountItem()
+                          .toString(),
+                      style: TextStyle(fontSize: 15),
+                    ),
+                  ],
+                ),
               )
             ],
           ),
