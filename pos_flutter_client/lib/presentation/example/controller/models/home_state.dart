@@ -1,4 +1,4 @@
-import 'package:pos_flutter_client/presentation/home/controller/models/counter_model.dart';
+import 'counter_model.dart';
 
 abstract class HomeState {}
 
