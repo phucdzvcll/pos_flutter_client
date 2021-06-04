@@ -3,10 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pos_flutter_client/common/common.dart';
 import 'package:pos_flutter_client/data/data.dart';
 import 'package:pos_flutter_client/data/remote/api_service.dart';
 import 'package:pos_flutter_client/domain/domain.dart';
-import 'package:pos_flutter_client/presentation/home/home_page.dart';
+import 'package:pos_flutter_client/presentation/home/controller/authentication_controller.dart';
+import 'package:pos_flutter_client/presentation/home/home_state.dart';
+import 'package:pos_flutter_client/presentation/home/ui/home_page.dart';
+import 'package:pos_flutter_client/presentation/order/ui/order.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,6 +45,9 @@ void _initDi() {
 }
 
 class MyApp extends StatelessWidget {
+  final AuthenticationController authenticationController =
+      AuthenticationController()..getAuthenticationState();
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
@@ -49,8 +56,28 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: HomePage(),
+      home: GetXWrapBuilder(
+        builder: (_) => _authenticationBuilder(
+            authenticationController.authenticationRx.value),
+        initController: authenticationController,
+      ),
     );
+  }
+
+  Widget _authenticationBuilder(AuthenticationState authenticationState) {
+    if (authenticationState is LoginState) {
+      return Order(
+        email: authenticationState.email,
+      );
+    } else if (authenticationState is LogoutState) {
+      return HomePage();
+    } else {
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
   }
 }
 //

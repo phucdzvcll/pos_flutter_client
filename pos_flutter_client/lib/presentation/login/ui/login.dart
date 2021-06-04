@@ -102,8 +102,9 @@ class Login extends StatelessWidget {
                         .login(_emailController.text, _passController.text)
                         .then((value) {
                       if (value != null) {
-                        print(value);
-                        Get.to(Order());
+                        Get.offAll(Order(
+                          email: ' value.email ??',
+                        ));
                       }
                     });
                   }

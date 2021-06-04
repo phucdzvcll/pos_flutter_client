@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:pos_flutter_client/domain/domain.dart';
 import 'package:pos_flutter_client/presentation/order/order.dart';
@@ -47,5 +48,9 @@ class OrderController extends GetxController {
     }
     categoryRx.value =
         CategoriesState(categories: _categories, selectedCategoryId: id);
+  }
+
+  void logout() async {
+    await FirebaseAuth.instance.signOut();
   }
 }

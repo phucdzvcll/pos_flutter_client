@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
-import 'package:pos_flutter_client/presentation/register/controller/register_state.dart';
+
+import 'register_state.dart';
 
 class RegisterController extends GetxController {
   var obscureTextRx =
@@ -15,8 +16,10 @@ class RegisterController extends GetxController {
 
   Future register(String email, String password) async {
     try {
-      return await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
+      var auth = FirebaseAuth.instance;
+      var user =
+          auth.createUserWithEmailAndPassword(email: email, password: password);
+      return user;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         errorMessageRx.value = ErrorMessageState(

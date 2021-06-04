@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
-import 'package:pos_flutter_client/presentation/register/controller/register_state.dart';
+
+import 'login_state.dart';
 
 class LoginController extends GetxController {
   var obscureTextRx =

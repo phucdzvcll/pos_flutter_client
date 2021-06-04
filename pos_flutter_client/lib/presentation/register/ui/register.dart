@@ -2,7 +2,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pos_flutter_client/common/common.dart';
-import 'package:pos_flutter_client/presentation/login/ui/login.dart';
+import 'package:pos_flutter_client/presentation/order/ui/order.dart';
 import 'package:pos_flutter_client/presentation/register/controller/register_controller.dart';
 
 class Register extends StatelessWidget {
@@ -63,7 +63,7 @@ class Register extends StatelessWidget {
               },
             ),
             SizedBox(height: 30),
-            GetXWrapBuilder(
+            GetXWrapBuilder<RegisterController>(
                 builder: (_) => TextFormField(
                       validator: (password) {
                         if (password != null) {
@@ -101,7 +101,12 @@ class Register extends StatelessWidget {
                     registerController
                         .register(_emailController.text, _passController.text)
                         .then((value) => {
-                              if (value != null) {Get.to(Login())}
+                              if (value != null)
+                                {
+                                  Get.offAll(Order(
+                                    email: "value.email",
+                                  ))
+                                }
                             });
                   }
                 },

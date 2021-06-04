@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:pos_flutter_client/common/common.dart';
+import 'package:pos_flutter_client/presentation/home/ui/home_page.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_controller.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_state.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/ui/ticket_cart.dart';
@@ -15,6 +16,10 @@ import '../controller/order_state.dart';
 class Order extends StatelessWidget {
   final OrderController orderController = OrderController();
   final TicketCartController ticketCartController = TicketCartController();
+
+  String email;
+
+  Order({Key? key, required this.email}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +74,7 @@ class Order extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      'phuc tran',
+                      'email',
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -94,7 +99,7 @@ class Order extends StatelessWidget {
             ),
             title: Text('Sale'),
             onTap: () {
-              Navigator.pop(context);
+              Get.back();
             },
           ),
           ListTile(
@@ -103,7 +108,7 @@ class Order extends StatelessWidget {
             ),
             title: Text('Receipts'),
             onTap: () {
-              Navigator.pop(context);
+              Get.back();
             },
           ),
           ListTile(
@@ -112,14 +117,14 @@ class Order extends StatelessWidget {
             ),
             title: Text('Items'),
             onTap: () {
-              Navigator.pop(context);
+              Get.back();
             },
           ),
           ListTile(
             leading: Icon(Icons.settings),
             title: Text('Setting'),
             onTap: () {
-              Navigator.pop(context);
+              Get.back();
             },
           ),
           Divider(
@@ -131,7 +136,7 @@ class Order extends StatelessWidget {
             ),
             title: Text('Black office'),
             onTap: () {
-              Navigator.pop(context);
+              Get.back();
             },
           ),
           ListTile(
@@ -140,7 +145,7 @@ class Order extends StatelessWidget {
             ),
             title: Text('App'),
             onTap: () {
-              Navigator.pop(context);
+              Get.back();
             },
           ),
           ListTile(
@@ -149,7 +154,20 @@ class Order extends StatelessWidget {
             ),
             title: Text('Help'),
             onTap: () {
-              Navigator.pop(context);
+              Get.back();
+            },
+          ),
+          Divider(
+            color: Colors.black45,
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.logout_outlined,
+            ),
+            title: Text('Logout'),
+            onTap: () {
+              orderController.logout();
+              Get.offAll(HomePage());
             },
           )
         ],
