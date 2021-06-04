@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "447083298587",
+    "project_id": "pos-flutter-client",
+    "storage_bucket": "pos-flutter-client.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:447083298587:android:17d8ec3b5c38ebdd851dbe",
+        "android_client_info": {
+          "package_name": "com.example.pos_flutter_client"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "447083298587-90ne6p5oeof7nnnq6v30b4l5a2p11jv7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYy2z7yQgq5Q9tQ4tuye_K-6cQGGa89Jo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "447083298587-90ne6p5oeof7nnnq6v30b4l5a2p11jv7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
