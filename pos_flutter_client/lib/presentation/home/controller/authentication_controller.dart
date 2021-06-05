@@ -6,6 +6,7 @@ import 'package:pos_flutter_client/presentation/home/home_state.dart';
 class AuthenticationController extends GetxController {
   var authenticationRx = Rx<AuthenticationState>(LoadingState());
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
   void getAuthenticationState() {
     if (_auth.currentUser != null) {
       authenticationRx.value =
@@ -13,5 +14,10 @@ class AuthenticationController extends GetxController {
     } else {
       authenticationRx.value = LogoutState();
     }
+  }
+
+  void logout() async {
+    await _auth.signOut();
+    getAuthenticationState();
   }
 }

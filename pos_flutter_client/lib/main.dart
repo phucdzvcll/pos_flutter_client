@@ -34,6 +34,7 @@ void _initDi() {
   final client = ApiService(dio);
   Get.put<OrderRepository>(OrderRepositoryImpl());
   Get.put<RandomProvider>(RandomProviderImpl());
+  Get.put<AuthenticationController>(AuthenticationController());
   Get.put<ApiService>(client);
 
   //domain
@@ -45,21 +46,29 @@ void _initDi() {
 }
 
 class MyApp extends StatelessWidget {
-  final AuthenticationController authenticationController =
-      AuthenticationController()..getAuthenticationState();
+  final authenticationController = Get.find<AuthenticationController>()
+    ..getAuthenticationState()
+    ..authenticationRx.listen((authenticationState) {
+      if (authenticationState is LoginState) {
+        Get.until((route) => Get.currentRoute == '/');
+      }
+    });
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
+      initialRoute: '/',
+      routes: {
+        '/': (context) => GetXWrapBuilder(
+              builder: (_) => _authenticationBuilder(
+                  authenticationController.authenticationRx.value),
+              initController: authenticationController,
+            ),
+      },
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.green,
-      ),
-      home: GetXWrapBuilder(
-        builder: (_) => _authenticationBuilder(
-            authenticationController.authenticationRx.value),
-        initController: authenticationController,
       ),
     );
   }

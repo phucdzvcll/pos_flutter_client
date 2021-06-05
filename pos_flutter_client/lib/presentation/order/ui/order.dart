@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:pos_flutter_client/common/common.dart';
-import 'package:pos_flutter_client/presentation/home/ui/home_page.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_controller.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_state.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/ui/ticket_cart.dart';
@@ -14,48 +13,43 @@ import '../controller/order_controller.dart';
 import '../controller/order_state.dart';
 
 class Order extends StatelessWidget {
-  final OrderController orderController = OrderController();
+  final OrderController orderController = OrderController()..getListOrders();
   final TicketCartController ticketCartController = TicketCartController();
-
-  String email;
+  final String email;
 
   Order({Key? key, required this.email}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    orderController.getListOrders();
     return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Color(0xff4CAF50),
-          title: GetXWrapBuilder<TicketCartController>(
-            initController: ticketCartController,
-            builder: (_) =>
-                _ticketCartHeader(ticketCartController.ticketCartStateRx.value),
+      child: WillPopScope(
+        onWillPop: () async => false,
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Color(0xff4CAF50),
+            title: GetXWrapBuilder<TicketCartController>(
+              initController: ticketCartController,
+              builder: (_) => _ticketCartHeader(
+                  ticketCartController.ticketCartStateRx.value),
+            ),
+            actions: [
+              IconButton(
+                  alignment: Alignment.centerLeft,
+                  icon: Icon(
+                    Icons.person_add_outlined,
+                  ),
+                  onPressed: () {}),
+              IconButton(
+                  alignment: Alignment.centerLeft,
+                  icon: Icon(
+                    Icons.more_vert_outlined,
+                  ),
+                  onPressed: () {}),
+            ],
           ),
-          actions: [
-            IconButton(
-                alignment: Alignment.centerLeft,
-                icon: Icon(
-                  Icons.person_add_outlined,
-                ),
-                onPressed: () {}),
-            IconButton(
-                alignment: Alignment.centerLeft,
-                icon: Icon(
-                  Icons.more_vert_outlined,
-                ),
-                onPressed: () {}),
-          ],
-          // leading: IconButton(
-          //     alignment: Alignment.centerLeft,
-          //     icon: Icon(
-          //       Icons.view_headline_outlined,
-          //     ),
-          //     onPressed: () {}),
+          drawer: _drawer(context),
+          body: _body(context, orderController),
         ),
-        drawer: _drawer(context),
-        body: _body(context, orderController),
       ),
     );
   }
@@ -74,7 +68,7 @@ class Order extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      'email',
+                      email,
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -167,7 +161,6 @@ class Order extends StatelessWidget {
             title: Text('Logout'),
             onTap: () {
               orderController.logout();
-              Get.offAll(HomePage());
             },
           )
         ],

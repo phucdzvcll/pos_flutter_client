@@ -1,10 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:pos_flutter_client/domain/domain.dart';
+import 'package:pos_flutter_client/presentation/home/controller/authentication_controller.dart';
 import 'package:pos_flutter_client/presentation/order/order.dart';
 
 class OrderController extends GetxController {
   final GetOrderUseCase getOrderUseCase = Get.find();
+  final authenticationController = Get.find<AuthenticationController>();
   var orderStateRx = Rx<OrderItemsState>(LoadingOrderState());
   var categoryRx = Rx<CategoriesState>(CategoriesState(
       categories: [Category(name: "All", color: '#ffffff', id: 0)],
@@ -50,7 +51,7 @@ class OrderController extends GetxController {
         CategoriesState(categories: _categories, selectedCategoryId: id);
   }
 
-  void logout() async {
-    await FirebaseAuth.instance.signOut();
+  void logout() {
+    authenticationController.logout();
   }
 }

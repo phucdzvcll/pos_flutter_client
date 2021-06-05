@@ -1,17 +1,15 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:pos_flutter_client/common/common.dart';
 import 'package:pos_flutter_client/presentation/login/controller/login_controller.dart';
-import 'package:pos_flutter_client/presentation/order/ui/order.dart';
 
 class Login extends StatelessWidget {
+  final String? email;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
   final _keyForm = GlobalKey<FormState>();
-
   final LoginController loginController = LoginController();
-
+  Login({Key? key, this.email}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -52,6 +50,7 @@ class Login extends StatelessWidget {
             ),
             TextFormField(
               controller: _emailController,
+              // initialValue: email != null ? email : null,
               decoration: InputDecoration(hintText: 'Email'),
               validator: (email) {
                 if (email != null) {
@@ -98,15 +97,8 @@ class Login extends StatelessWidget {
                 onPressed: () {
                   if (_keyForm.currentState != null &&
                       _keyForm.currentState!.validate()) {
-                    loginController
-                        .login(_emailController.text, _passController.text)
-                        .then((value) {
-                      if (value != null) {
-                        Get.offAll(Order(
-                          email: ' value.email ??',
-                        ));
-                      }
-                    });
+                    loginController.login(
+                        _emailController.text, _passController.text);
                   }
                 },
                 textColor: Colors.white,

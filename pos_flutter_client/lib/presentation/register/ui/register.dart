@@ -1,17 +1,13 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:pos_flutter_client/common/common.dart';
-import 'package:pos_flutter_client/presentation/order/ui/order.dart';
 import 'package:pos_flutter_client/presentation/register/controller/register_controller.dart';
 
 class Register extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
   final _keyForm = GlobalKey<FormState>();
-
   final RegisterController registerController = RegisterController();
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -98,16 +94,8 @@ class Register extends StatelessWidget {
                 onPressed: () {
                   if (_keyForm.currentState != null &&
                       _keyForm.currentState!.validate()) {
-                    registerController
-                        .register(_emailController.text, _passController.text)
-                        .then((value) => {
-                              if (value != null)
-                                {
-                                  Get.offAll(Order(
-                                    email: "value.email",
-                                  ))
-                                }
-                            });
+                    registerController.register(
+                        _emailController.text, _passController.text);
                   }
                 },
                 textColor: Colors.white,

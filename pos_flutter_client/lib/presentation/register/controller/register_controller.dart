@@ -1,9 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:pos_flutter_client/common/common.dart';
+import 'package:pos_flutter_client/presentation/home/controller/authentication_controller.dart';
+import 'package:pos_flutter_client/presentation/home/home_state.dart';
 
 import 'register_state.dart';
 
 class RegisterController extends GetxController {
+  final authenticationController = Get.find<AuthenticationController>();
   var obscureTextRx =
       Rx<ObscureTextState>(ObscureTextState(isObscureText: true));
   var errorMessageRx =
@@ -16,10 +20,12 @@ class RegisterController extends GetxController {
 
   Future register(String email, String password) async {
     try {
-      var auth = FirebaseAuth.instance;
-      var user =
-          auth.createUserWithEmailAndPassword(email: email, password: password);
-      return user;
+      var userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      if (userCredential.user != null) {
+        authenticationController.authenticationRx.value =
+            LoginState(email: userCredential.user!.email.defaultEmpty());
+      }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         errorMessageRx.value = ErrorMessageState(
