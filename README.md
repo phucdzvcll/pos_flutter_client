@@ -10,7 +10,7 @@ POS App
 - [Dart data class](https://plugins.jetbrains.com/plugin/12429-dart-data-class)
 - [Json to dart](https://plugins.jetbrains.com/plugin/12737-json-to-dart-class-jsontodartclass-)
 
-## rule
+## Rule
 
 - Separation of business logic with Ui
 - Ui will be updated through GetxController
@@ -22,6 +22,17 @@ POS App
 ![](images/pick_item.gif)
 ![](images/eidt_item_cart.gif)
 ![](images/remove_item_cart.gif)
+
+## Dev Tools Screenshots
+![](images/dev_tools/performance.png)
+![](images/dev_tools/memory.png)
+![](images/dev_tools/CPU_profiler.png)
+![](images/dev_tools/logging.png)
+![](images/dev_tools/network.png)
+![](images/dev_tools/app_size.png)
+
+
+
 
 
 
