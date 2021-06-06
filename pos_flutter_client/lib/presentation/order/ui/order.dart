@@ -357,7 +357,7 @@ class Order extends StatelessWidget {
           Positioned(
             right: 0,
             child: AnimatedContainer(
-              duration: Duration(milliseconds: 400),
+              duration: Duration(milliseconds: 500),
               width: fillBarState is FillState ? 0 : width,
               color: Theme.of(context).scaffoldBackgroundColor,
               child: _search(fillBarState is SearchState),

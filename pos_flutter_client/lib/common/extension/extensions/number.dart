@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 
-final f = new NumberFormat("###");
+final f = new NumberFormat("#,###.00");
 
 extension IntNullUtils on int? {
   int defaultZero() => defaultIfNull(0);
@@ -13,11 +13,5 @@ extension DoubleNullUtils on double? {
 
   double defaultIfNull(double defaultNumber) => this ?? defaultNumber;
 
-  String formatDouble() {
-    if (this.defaultZero().truncateToDouble() == this) {
-      return f.format(this);
-    } else {
-      return this.defaultZero().toString();
-    }
-  }
+  String formatDouble() => f.format(this);
 }
