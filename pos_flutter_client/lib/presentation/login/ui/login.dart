@@ -27,7 +27,7 @@ class Login extends StatelessWidget {
       key: _keyForm,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 10),
-        child: Column(
+        child: ListView(
           children: [
             GetXWrapBuilder<LoginController>(
                 builder: (_) => Visibility(
@@ -87,7 +87,7 @@ class Login extends StatelessWidget {
                     ),
                 initController: loginController),
             SizedBox(
-              height: 30,
+              height: 130,
             ),
             SizedBox(
               width: double.infinity,

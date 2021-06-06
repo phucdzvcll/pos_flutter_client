@@ -25,7 +25,7 @@ class Register extends StatelessWidget {
       key: _keyForm,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 10),
-        child: Column(
+        child: ListView(
           children: [
             GetXWrapBuilder<RegisterController>(
                 builder: (_) => Visibility(
@@ -84,7 +84,7 @@ class Register extends StatelessWidget {
                     ),
                 initController: registerController),
             SizedBox(
-              height: 30,
+              height: 130,
             ),
             SizedBox(
               width: double.infinity,
