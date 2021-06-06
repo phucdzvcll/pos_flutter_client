@@ -47,7 +47,7 @@ class Order extends StatelessWidget {
           ],
         ),
         drawer: _drawer(context),
-        body: _body(context, orderController),
+        body: Builder(builder: (ctx) => _body(ctx, orderController)),
       ),
     );
   }
@@ -309,129 +309,123 @@ class Order extends StatelessWidget {
   }
 
   Widget _search(bool isVisible) {
-    return Visibility(
-      visible: isVisible,
-      child: TextField(
-        textAlignVertical: TextAlignVertical.center,
-        autofocus: true,
-        controller: searchController,
-        decoration: InputDecoration(
-            border: InputBorder.none,
-            focusedBorder: InputBorder.none,
-            enabledBorder: InputBorder.none,
-            errorBorder: InputBorder.none,
-            disabledBorder: InputBorder.none,
-            contentPadding: EdgeInsets.symmetric(horizontal: 15),
-            hintText: "Search",
-            hintStyle: TextStyle(color: Colors.grey),
-            suffixIcon: IconButton(
-              color: Colors.grey,
-              icon: Icon(Icons.close),
-              onPressed: () {
-                orderController.changeFillBarState();
-                searchController.text = "";
-              },
-            )),
-        onChanged: (value) {
-          orderController.fillBySearch(value);
-        },
-      ),
+    return TextField(
+      textAlignVertical: TextAlignVertical.center,
+      autofocus: true,
+      controller: searchController,
+      decoration: InputDecoration(
+          border: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          enabledBorder: InputBorder.none,
+          errorBorder: InputBorder.none,
+          disabledBorder: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(horizontal: 15),
+          hintText: "Search",
+          hintStyle: TextStyle(color: Colors.grey),
+          suffixIcon: IconButton(
+            color: Colors.grey,
+            icon: Icon(Icons.close),
+            onPressed: () {
+              orderController.changeFillBarState();
+              searchController.text = "";
+            },
+          )),
+      onChanged: (value) {
+        orderController.fillBySearch(value);
+      },
     );
   }
 
   Widget _fillBar(CategoriesState categoriesState, BuildContext context) {
-    return DecoratedBox(
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey, width: 0.5),
-        ),
-        child: GetXWrapBuilder<OrderController>(
-          builder: (_) => _fillStateBuilder(
-              orderController.fillBarRX.value, categoriesState, context),
-          initController: orderController,
-        ));
+    return GetXWrapBuilder<OrderController>(
+      builder: (_) => _fillStateBuilder(
+          orderController.fillBarRX.value, categoriesState, context),
+      initController: orderController,
+    );
   }
 
   Widget _fillStateBuilder(FillBarState fillBarState,
       CategoriesState categoriesState, BuildContext context) {
     var width = MediaQuery.of(context).size.width;
-    return Row(
-      children: [
-        AnimatedContainer(
-          duration: Duration(milliseconds: 500),
-          width: fillBarState is FillState ? width : 0,
-          child: _fillMenuDropDown(
-              categoriesState, fillBarState is FillState ? true : false),
-        ),
-        AnimatedContainer(
-          duration: Duration(milliseconds: 500),
-          width: fillBarState is FillState ? 0 : width,
-          child: _search(fillBarState is FillState ? false : true),
-        )
-      ],
-    );
-  }
-
-  Widget _fillMenuDropDown(CategoriesState categoriesState, bool isVisible) {
-    return Visibility(
-      visible: isVisible,
-      child: Row(
+    return Container(
+      decoration:
+          BoxDecoration(border: Border.all(color: Colors.grey, width: 0.5)),
+      child: Stack(
         children: [
-          Expanded(
-            flex: 1,
-            child: SizedBox(),
-          ),
-          Expanded(
-            flex: 20,
-            child: DropdownButton<int>(
-              onChanged: (int? id) {
-                if (id != null) {
-                  orderController.fillByCategory(id);
-                }
-              },
-              underline: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: Color(0x00000000),
-                ),
-              ),
-              icon: Icon(
-                Icons.expand_more_outlined,
-              ),
-              style: TextStyle(color: Colors.black),
-              isExpanded: true,
-              value: categoriesState.selectedCategoryId,
-              items: categoriesState.categories.map((Category category) {
-                return DropdownMenuItem<int>(
-                  child: Text(
-                    category.name,
-                    style: TextStyle(color: Colors.black, fontSize: 16),
-                  ),
-                  value: category.id,
-                );
-              }).toList(),
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: SizedBox(),
-          ),
-          Expanded(
-            flex: 4,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                border: Border(
-                  left: BorderSide(color: Colors.grey),
-                ),
-              ),
-              child: IconButton(
-                onPressed: () {
-                  orderController.changeFillBarState();
-                },
-                icon: Icon(Icons.search),
-              ),
+          _fillMenuDropDown(
+              categoriesState, fillBarState is FillState ? true : false),
+          Positioned(
+            right: 0,
+            child: AnimatedContainer(
+              duration: Duration(milliseconds: 400),
+              width: fillBarState is FillState ? 0 : width,
+              color: Theme.of(context).scaffoldBackgroundColor,
+              child: _search(fillBarState is SearchState),
             ),
           )
         ],
       ),
+    );
+  }
+
+  Widget _fillMenuDropDown(CategoriesState categoriesState, bool isVisible) {
+    return Row(
+      children: [
+        Expanded(
+          flex: 1,
+          child: SizedBox(),
+        ),
+        Expanded(
+          flex: 20,
+          child: DropdownButton<int>(
+            onChanged: (int? id) {
+              if (id != null) {
+                orderController.fillByCategory(id);
+              }
+            },
+            underline: DecoratedBox(
+              decoration: BoxDecoration(
+                color: Color(0x00000000),
+              ),
+            ),
+            icon: Icon(
+              Icons.expand_more_outlined,
+            ),
+            style: TextStyle(color: Colors.black),
+            isExpanded: true,
+            value: categoriesState.selectedCategoryId,
+            items: categoriesState.categories.map((Category category) {
+              return DropdownMenuItem<int>(
+                child: Text(
+                  category.name,
+                  style: TextStyle(color: Colors.black, fontSize: 16),
+                ),
+                value: category.id,
+              );
+            }).toList(),
+          ),
+        ),
+        Expanded(
+          flex: 1,
+          child: SizedBox(),
+        ),
+        Expanded(
+          flex: 4,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              border: Border(
+                left: BorderSide(color: Colors.grey, width: 0.5),
+              ),
+            ),
+            child: IconButton(
+              onPressed: () {
+                orderController.changeFillBarState();
+              },
+              icon: Icon(Icons.search),
+            ),
+          ),
+        )
+      ],
     );
   }
 
