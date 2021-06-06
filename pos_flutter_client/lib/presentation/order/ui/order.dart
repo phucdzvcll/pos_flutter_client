@@ -22,34 +22,31 @@ class Order extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: WillPopScope(
-        onWillPop: () async => false,
-        child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Color(0xff4CAF50),
-            title: GetXWrapBuilder<TicketCartController>(
-              initController: ticketCartController,
-              builder: (_) => _ticketCartHeader(
-                  ticketCartController.ticketCartStateRx.value),
-            ),
-            actions: [
-              IconButton(
-                  alignment: Alignment.centerLeft,
-                  icon: Icon(
-                    Icons.person_add_outlined,
-                  ),
-                  onPressed: () {}),
-              IconButton(
-                  alignment: Alignment.centerLeft,
-                  icon: Icon(
-                    Icons.more_vert_outlined,
-                  ),
-                  onPressed: () {}),
-            ],
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Color(0xff4CAF50),
+          title: GetXWrapBuilder<TicketCartController>(
+            initController: ticketCartController,
+            builder: (_) =>
+                _ticketCartHeader(ticketCartController.ticketCartStateRx.value),
           ),
-          drawer: _drawer(context),
-          body: _body(context, orderController),
+          actions: [
+            IconButton(
+                alignment: Alignment.centerLeft,
+                icon: Icon(
+                  Icons.person_add_outlined,
+                ),
+                onPressed: () {}),
+            IconButton(
+                alignment: Alignment.centerLeft,
+                icon: Icon(
+                  Icons.more_vert_outlined,
+                ),
+                onPressed: () {}),
+          ],
         ),
+        drawer: _drawer(context),
+        body: _body(context, orderController),
       ),
     );
   }
@@ -224,7 +221,7 @@ class Order extends StatelessWidget {
             initController: orderController),
         GetXWrapBuilder<OrderController>(
             initController: orderController,
-            builder: (_) => _dropDown(orderController.categoryRx.value)),
+            builder: (_) => _fillBar(orderController.categoryRx.value)),
         Expanded(
           child: GetXWrapBuilder<OrderController>(
             initController: orderController,
@@ -309,62 +306,101 @@ class Order extends StatelessWidget {
     );
   }
 
-  Widget _dropDown(CategoriesState categoriesState) {
+  Widget _search() {
+    return TextField(
+      textAlignVertical: TextAlignVertical.center,
+      autofocus: true,
+      decoration: InputDecoration(
+          contentPadding: EdgeInsets.symmetric(horizontal: 15),
+          hintText: "Search",
+          hintStyle: TextStyle(color: Colors.grey),
+          suffixIcon: IconButton(
+            color: Colors.grey,
+            icon: Icon(Icons.close),
+            onPressed: () {
+              orderController.changeFillBarState();
+            },
+          )),
+      onChanged: (value) {
+        orderController.fillBySearch(value);
+      },
+    );
+  }
+
+  Widget _fillBar(CategoriesState categoriesState) {
     return DecoratedBox(
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey, width: 0.5),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: DropdownButton<int>(
-              onChanged: (int? id) {
-                if (id != null) {
-                  orderController.fillByCategory(id);
-                }
-              },
-              underline: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: Color(0x00000000),
-                ),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey, width: 0.5),
+        ),
+        child: GetXWrapBuilder<OrderController>(
+          builder: (_) => _fillStateBuilder(
+              orderController.fillBarRX.value, categoriesState),
+          initController: orderController,
+        ));
+  }
+
+  Widget _fillStateBuilder(
+      FillBarState fillBarState, CategoriesState categoriesState) {
+    if (fillBarState is FillState) {
+      return _fillMenuDropDown(categoriesState);
+    } else {
+      return _search();
+    }
+  }
+
+  Row _fillMenuDropDown(CategoriesState categoriesState) {
+    return Row(
+      children: [
+        Expanded(
+          child: DropdownButton<int>(
+            onChanged: (int? id) {
+              if (id != null) {
+                orderController.fillByCategory(id);
+              }
+            },
+            underline: DecoratedBox(
+              decoration: BoxDecoration(
+                color: Color(0x00000000),
               ),
-              icon: Padding(
-                padding: EdgeInsets.only(right: 20),
-                child: Icon(
-                  Icons.expand_more_outlined,
-                ),
+            ),
+            icon: Padding(
+              padding: EdgeInsets.only(right: 20),
+              child: Icon(
+                Icons.expand_more_outlined,
               ),
-              iconSize: 24,
-              style: TextStyle(color: Colors.black),
-              isExpanded: true,
-              value: categoriesState.selectedCategoryId,
-              items: categoriesState.categories.map((Category category) {
-                return DropdownMenuItem<int>(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(
-                      category.name,
-                      style: TextStyle(color: Colors.black, fontSize: 16),
-                    ),
+            ),
+            iconSize: 24,
+            style: TextStyle(color: Colors.black),
+            isExpanded: true,
+            value: categoriesState.selectedCategoryId,
+            items: categoriesState.categories.map((Category category) {
+              return DropdownMenuItem<int>(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Text(
+                    category.name,
+                    style: TextStyle(color: Colors.black, fontSize: 16),
                   ),
-                  value: category.id,
-                );
-              }).toList(),
+                ),
+                value: category.id,
+              );
+            }).toList(),
+          ),
+        ),
+        DecoratedBox(
+          decoration: BoxDecoration(
+            border: Border(
+              left: BorderSide(color: Colors.grey),
             ),
           ),
-          DecoratedBox(
-            decoration: BoxDecoration(
-              border: Border(
-                left: BorderSide(color: Colors.grey),
-              ),
-            ),
-            child: IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.search),
-            ),
-          )
-        ],
-      ),
+          child: IconButton(
+            onPressed: () {
+              orderController.changeFillBarState();
+            },
+            icon: Icon(Icons.search),
+          ),
+        )
+      ],
     );
   }
 

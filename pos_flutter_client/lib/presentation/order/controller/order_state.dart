@@ -22,3 +22,9 @@ class CategoriesState {
     required this.selectedCategoryId,
   });
 }
+
+class FillBarState {}
+
+class SearchState extends FillBarState {}
+
+class FillState extends FillBarState {}
