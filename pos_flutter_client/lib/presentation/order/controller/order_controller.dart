@@ -1,9 +1,12 @@
 import 'package:get/get.dart';
 import 'package:pos_flutter_client/domain/domain.dart';
+import 'package:pos_flutter_client/presentation/home/controller/authentication_controller.dart';
 import 'package:pos_flutter_client/presentation/order/order.dart';
 
 class OrderController extends GetxController {
   final GetOrderUseCase getOrderUseCase = Get.find();
+  final authenticationController = Get.find<AuthenticationController>();
+  var fillBarRX = Rx<FillBarState>(FillState());
   var orderStateRx = Rx<OrderItemsState>(LoadingOrderState());
   var categoryRx = Rx<CategoriesState>(CategoriesState(
       categories: [Category(name: "All", color: '#ffffff', id: 0)],
@@ -47,5 +50,29 @@ class OrderController extends GetxController {
     }
     categoryRx.value =
         CategoriesState(categories: _categories, selectedCategoryId: id);
+  }
+
+  void fillBySearch(String value) {
+    orderStateRx.value = SuccessOrderState(
+        items: _items
+            .where(
+                (item) => item.name.toLowerCase().contains(value.toLowerCase()))
+            .toList());
+  }
+
+  void changeFillBarState() {
+    if (fillBarRX.value is FillState) {
+      fillBarRX.value = SearchState();
+      orderStateRx.value = SuccessOrderState(items: _items);
+    } else {
+      fillBarRX.value = FillState();
+      orderStateRx.value = SuccessOrderState(items: _items);
+      categoryRx.value =
+          CategoriesState(categories: _categories, selectedCategoryId: 0);
+    }
+  }
+
+  void logout() {
+    authenticationController.logout();
   }
 }

@@ -57,7 +57,6 @@ class OrderRepositoryImpl extends OrderRepository {
               price: product.price.defaultZero());
           productsEntity.add(productEntity);
         });
-        print(productsEntity);
         categoriesEntity.add(categoryEntity);
       });
       var categories = GetOrderResult(
