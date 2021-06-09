@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:pos_flutter_client/common/common.dart';
+import 'package:pos_flutter_client/presentation/authentication/authentication.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_controller.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_state.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/ui/ticket_cart.dart';
@@ -158,7 +160,8 @@ class Order extends StatelessWidget {
             ),
             title: Text('Logout'),
             onTap: () {
-              // orderController.logout();
+              BlocProvider.of<AuthenticationBloc>(context)
+                  .add(LogoutAuthenticationEvent());
             },
           )
         ],
@@ -311,7 +314,6 @@ class Order extends StatelessWidget {
   Widget _search(bool isVisible) {
     return TextField(
       textAlignVertical: TextAlignVertical.center,
-      autofocus: true,
       controller: searchController,
       decoration: InputDecoration(
           border: InputBorder.none,
