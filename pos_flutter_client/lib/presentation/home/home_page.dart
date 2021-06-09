@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:pos_flutter_client/presentation/login/bloc/login_bloc.dart';
 import 'package:pos_flutter_client/presentation/login/ui/login.dart';
 import 'package:pos_flutter_client/presentation/register/ui/register.dart';
 
@@ -50,7 +52,14 @@ class HomePage extends StatelessWidget {
                           height: 50,
                           child: MaterialButton(
                             onPressed: () {
-                              Get.to(Login());
+                              Get.to(
+                                BlocProvider<LoginBloc>(
+                                  create: (_) {
+                                    return LoginBloc();
+                                  },
+                                  child: Login(),
+                                ),
+                              );
                             },
                             child: Text("LOGIN"),
                             color: Colors.white,
