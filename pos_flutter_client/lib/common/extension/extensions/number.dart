@@ -1,7 +1,6 @@
 import 'package:intl/intl.dart';
 
-final f = new NumberFormat("#,###");
-final f2 = new NumberFormat("#,###.00");
+NumberFormat _moneyNumberFormat = NumberFormat("#,##0.##", "en_US");
 
 extension IntNullUtils on int? {
   int defaultZero() => defaultIfNull(0);
@@ -16,9 +15,9 @@ extension DoubleNullUtils on double? {
 
   String formatDouble() {
     if (this.defaultZero().truncateToDouble() == this) {
-      return f.format(this);
+      return _moneyNumberFormat.format(this);
     } else {
-      return f2.format(this);
+      return _moneyNumberFormat.format(this);
     }
   }
 }

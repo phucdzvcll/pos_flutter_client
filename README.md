@@ -4,7 +4,7 @@ POS App
 - [State Management Getx](https://pub.dev/packages/get#state-management)
 - [Dependency management Getx](https://pub.dev/packages/get#dependency-management)
 - [Route Management Getx](https://pub.dev/packages/get#route-management)
-
+- [Firebase](https://firebase.flutter.dev/)
 ## Plugin 
 
 - [Dart data class](https://plugins.jetbrains.com/plugin/12429-dart-data-class)
