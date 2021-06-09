@@ -158,7 +158,7 @@ class Order extends StatelessWidget {
             ),
             title: Text('Logout'),
             onTap: () {
-              orderController.logout();
+              // orderController.logout();
             },
           )
         ],

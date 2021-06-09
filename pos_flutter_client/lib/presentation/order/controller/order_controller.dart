@@ -1,11 +1,10 @@
 import 'package:get/get.dart';
 import 'package:pos_flutter_client/domain/domain.dart';
-import 'package:pos_flutter_client/presentation/home/controller/authentication_controller.dart';
 import 'package:pos_flutter_client/presentation/order/order.dart';
 
 class OrderController extends GetxController {
   final GetOrderUseCase getOrderUseCase = Get.find();
-  final authenticationController = Get.find<AuthenticationController>();
+  // final authenticationController = Get.find<AuthenticationController>();
   var fillBarRX = Rx<FillBarState>(FillState());
   var orderStateRx = Rx<OrderItemsState>(LoadingOrderState());
   var categoryRx = Rx<CategoriesState>(CategoriesState(
@@ -72,7 +71,7 @@ class OrderController extends GetxController {
     }
   }
 
-  void logout() {
-    authenticationController.logout();
-  }
+  // void logout() {
+  //   authenticationController.logout();
+  // }
 }
