@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
 import 'package:pos_flutter_client/common/common.dart';
 import 'package:pos_flutter_client/presentation/authentication/authentication.dart';
 import 'package:pos_flutter_client/presentation/order/bloc/order_bloc.dart';
@@ -112,7 +111,7 @@ class _OrderState extends State<Order> {
             ),
             title: Text('Sale'),
             onTap: () {
-              Get.back();
+              Navigator.pop(context);
             },
           ),
           ListTile(
@@ -121,7 +120,7 @@ class _OrderState extends State<Order> {
             ),
             title: Text('Receipts'),
             onTap: () {
-              Get.back();
+              Navigator.pop(context);
             },
           ),
           ListTile(
@@ -130,14 +129,14 @@ class _OrderState extends State<Order> {
             ),
             title: Text('Items'),
             onTap: () {
-              Get.back();
+              Navigator.pop(context);
             },
           ),
           ListTile(
             leading: Icon(Icons.settings),
             title: Text('Setting'),
             onTap: () {
-              Get.back();
+              Navigator.pop(context);
             },
           ),
           Divider(
@@ -149,7 +148,7 @@ class _OrderState extends State<Order> {
             ),
             title: Text('Black office'),
             onTap: () {
-              Get.back();
+              Navigator.pop(context);
             },
           ),
           ListTile(
@@ -158,7 +157,7 @@ class _OrderState extends State<Order> {
             ),
             title: Text('App'),
             onTap: () {
-              Get.back();
+              Navigator.pop(context);
             },
           ),
           ListTile(
@@ -167,7 +166,7 @@ class _OrderState extends State<Order> {
             ),
             title: Text('Help'),
             onTap: () {
-              Get.back();
+              Navigator.pop(context);
             },
           ),
           Divider(

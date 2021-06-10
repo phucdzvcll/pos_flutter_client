@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get.dart';
 import 'package:pos_flutter_client/presentation/login/bloc/login_bloc.dart';
 import 'package:pos_flutter_client/presentation/login/ui/login.dart';
 import 'package:pos_flutter_client/presentation/register/bloc/register_bloc.dart';
@@ -37,12 +36,15 @@ class HomePage extends StatelessWidget {
                           height: 50,
                           child: MaterialButton(
                             onPressed: () {
-                              Get.to(
-                                BlocProvider<RegisterBloc>(
-                                  create: (_) {
-                                    return RegisterBloc();
-                                  },
-                                  child: Register(),
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => BlocProvider<RegisterBloc>(
+                                    create: (_) {
+                                      return RegisterBloc();
+                                    },
+                                    child: Register(),
+                                  ),
                                 ),
                               );
                             },
@@ -60,12 +62,15 @@ class HomePage extends StatelessWidget {
                           height: 50,
                           child: MaterialButton(
                             onPressed: () {
-                              Get.to(
-                                BlocProvider<LoginBloc>(
-                                  create: (_) {
-                                    return LoginBloc();
-                                  },
-                                  child: Login(),
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => BlocProvider<LoginBloc>(
+                                    create: (_) {
+                                      return LoginBloc();
+                                    },
+                                    child: Login(),
+                                  ),
                                 ),
                               );
                             },
