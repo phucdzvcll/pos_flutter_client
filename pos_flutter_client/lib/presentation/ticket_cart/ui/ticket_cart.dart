@@ -6,6 +6,8 @@ import 'package:pos_flutter_client/common/common.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/bloc/ticket_cart_bloc.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/model/ticket.dart';
 
+import 'edit_ticket_cart.dart';
+
 class TicKetCart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -105,10 +107,13 @@ class TicKetCart extends StatelessWidget {
             (BuildContext context, int index) {
               var itemTicket = state.tickets[index];
               return InkWell(
-                onTap: () {
-                  // state.edit(itemTicket);
-                  // Get.to(EditTicketCart(
-                  //     ticketCartController: ticketCartController));
+                onTap: () async {
+                  BlocProvider.of<TicketCartBloc>(context).edit(itemTicket);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              EditTicketCart(ticket: itemTicket)));
                 },
                 child: _itemCart(itemTicket),
               );

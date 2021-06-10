@@ -13,6 +13,12 @@ class TicketCartBloc extends Bloc<TicketCartEvent, TicketCartBlocState> {
   List<Ticket> _ticketCart = [];
   TicketState ticketState = TicketState(tax: 0.0, tickets: []);
 
+  Ticket? _oldEditTicket;
+
+  void edit(Ticket ticket) {
+    _oldEditTicket = ticket;
+  }
+
   @override
   Stream<TicketCartBlocState> mapEventToState(
     TicketCartEvent event,
@@ -30,6 +36,20 @@ class TicketCartBloc extends Bloc<TicketCartEvent, TicketCartBlocState> {
       }
       ticketState = ticketState.copyWith(tickets: _ticketCart);
       yield ticketState;
+    } else if (event is EditTicketEvent) {
+      if (_oldEditTicket != null) {
+        var index =
+            _ticketCart.indexWhere((element) => element == _oldEditTicket);
+        if (index >= 0) {
+          if (event.ticket.amount == 0) {
+            _ticketCart.removeAt(index);
+          } else {
+            _ticketCart[index] = event.ticket;
+          }
+          ticketState = ticketState.copyWith(tickets: _ticketCart);
+          yield ticketState;
+        }
+      }
     }
   }
 }

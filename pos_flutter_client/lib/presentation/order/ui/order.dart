@@ -8,7 +8,6 @@ import 'package:pos_flutter_client/presentation/authentication/authentication.da
 import 'package:pos_flutter_client/presentation/order/bloc/order_bloc.dart';
 import 'package:pos_flutter_client/presentation/order/models/category.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/bloc/ticket_cart_bloc.dart';
-import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_controller.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/ui/ticket_cart.dart';
 
 import '../models/item.dart';
@@ -23,7 +22,6 @@ class Order extends StatefulWidget {
 }
 
 class _OrderState extends State<Order> {
-  final TicketCartController ticketCartController = TicketCartController();
   final searchController = TextEditingController();
   final FocusNode focusNode = FocusNode();
   bool isSearch = false;

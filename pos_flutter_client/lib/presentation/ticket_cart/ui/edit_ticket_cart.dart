@@ -1,39 +1,56 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:pos_flutter_client/common/common.dart';
-import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_controller.dart';
-import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pos_flutter_client/presentation/ticket_cart/bloc/ticket_cart_bloc.dart';
+import 'package:pos_flutter_client/presentation/ticket_cart/model/ticket.dart';
 
-class EditTicketCart extends StatelessWidget {
-  final TicketCartController ticketCartController;
+class EditTicketCart extends StatefulWidget {
+  final Ticket ticket;
 
-  const EditTicketCart({Key? key, required this.ticketCartController})
-      : super(key: key);
+  const EditTicketCart({Key? key, required this.ticket}) : super(key: key);
+
+  @override
+  _EditTicketCartState createState() => _EditTicketCartState();
+}
+
+class _EditTicketCartState extends State<EditTicketCart> {
+  int itemAmount = 0;
+  TextEditingController commentController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    itemAmount = widget.ticket.amount;
+    if (widget.ticket.comment != null) {
+      commentController.text = widget.ticket.comment!;
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    commentController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController commentController = TextEditingController(
-        text: ticketCartController.editTicketStateRx.value.ticket.comment
-            .defaultEmpty()
-            .toString());
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 1,
-          title: GetXWrapBuilder(
-            initController: ticketCartController,
-            builder: (_) => Text(
-              ticketCartController.editTicketStateRx.value.ticket.item.name,
-              style: TextStyle(color: Colors.black),
-            ),
+          title: Text(
+            widget.ticket.item.name,
+            style: TextStyle(color: Colors.black),
           ),
           actions: [
             TextButton(
               onPressed: () {
-                ticketCartController.saveEdit();
-                Get.back();
+                var newTicket = widget.ticket.copyWith(
+                    comment: commentController.text, amount: itemAmount);
+                BlocProvider.of<TicketCartBloc>(context)
+                    .add(EditTicketEvent(ticket: newTicket));
+                Navigator.pop(context);
               },
               child: Text(
                 "SAVE",
@@ -47,16 +64,16 @@ class EditTicketCart extends StatelessWidget {
               color: Colors.grey[700],
             ),
             onPressed: () {
-              Get.back();
+              Navigator.pop(context);
             },
           ),
         ),
-        body: _body(commentController),
+        body: _body(),
       ),
     );
   }
 
-  Widget _body(TextEditingController commentController) {
+  Widget _body() {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -79,7 +96,11 @@ class EditTicketCart extends StatelessWidget {
                 height: 40,
                 child: ElevatedButton(
                   onPressed: () {
-                    ticketCartController.downAction();
+                    if (itemAmount > 0) {
+                      setState(() {
+                        itemAmount -= 1;
+                      });
+                    }
                   },
                   child: Text(
                     "-",
@@ -90,13 +111,9 @@ class EditTicketCart extends StatelessWidget {
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10),
-                  child: GetXWrapBuilder(
-                    initController: ticketCartController,
-                    builder: (_) => Text(
-                      ticketCartController.editTicketStateRx.value.ticket.amount
-                          .toString(),
-                      textAlign: TextAlign.center,
-                    ),
+                  child: Text(
+                    itemAmount.toString(),
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ),
@@ -105,7 +122,9 @@ class EditTicketCart extends StatelessWidget {
                 height: 40,
                 child: ElevatedButton(
                   onPressed: () {
-                    ticketCartController.upAction();
+                    setState(() {
+                      itemAmount += 1;
+                    });
                   },
                   child: Text("+"),
                 ),
@@ -129,13 +148,6 @@ class EditTicketCart extends StatelessWidget {
           child: TextField(
             controller: commentController,
             decoration: InputDecoration(hintText: "Enter your comment"),
-            onChanged: (value) {
-              var newTicket = ticketCartController
-                  .editTicketStateRx.value.ticket
-                  .copyWith(comment: value);
-              ticketCartController.editTicketStateRx.value =
-                  EditTicketCartState(ticket: newTicket);
-            },
           ),
         )
       ],

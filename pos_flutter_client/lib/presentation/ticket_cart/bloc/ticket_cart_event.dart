@@ -8,3 +8,9 @@ class AddToCartEvent extends TicketCartEvent {
 
   AddToCartEvent({required this.item});
 }
+
+class EditTicketEvent extends TicketCartEvent {
+  final Ticket ticket;
+
+  EditTicketEvent({required this.ticket});
+}
