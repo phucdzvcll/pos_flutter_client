@@ -25,12 +25,14 @@ class Order extends StatefulWidget {
 class _OrderState extends State<Order> {
   final TicketCartController ticketCartController = TicketCartController();
   final searchController = TextEditingController();
+  final FocusNode focusNode = FocusNode();
   bool isSearch = false;
 
   @override
   void dispose() {
     super.dispose();
     searchController.dispose();
+    focusNode.dispose();
   }
 
   @override
@@ -42,7 +44,7 @@ class _OrderState extends State<Order> {
           title: BlocBuilder<TicketCartBloc, TicketCartBlocState>(
             builder: (ctx, state) {
               return state is TicketState
-                  ? _ticketCartHeader(state)
+                  ? _ticketCartHeader(state, context)
                   : Center(
                       child: CircularProgressIndicator(),
                     );
@@ -188,14 +190,10 @@ class _OrderState extends State<Order> {
     );
   }
 
-  InkWell _ticketCartHeader(TicketState ticketCartState) {
+  InkWell _ticketCartHeader(TicketState ticketCartState, BuildContext ctx) {
     return InkWell(
       onTap: () {
-        Get.to(
-          TicKetCart(
-            ticketCartController: ticketCartController,
-          ),
-        );
+        Navigator.push(ctx, MaterialPageRoute(builder: (_) => TicKetCart()));
       },
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -339,6 +337,7 @@ class _OrderState extends State<Order> {
     return TextField(
       textAlignVertical: TextAlignVertical.center,
       controller: searchController,
+      focusNode: focusNode,
       decoration: InputDecoration(
           border: InputBorder.none,
           focusedBorder: InputBorder.none,
@@ -352,13 +351,17 @@ class _OrderState extends State<Order> {
             color: Colors.grey,
             icon: Icon(Icons.close),
             autofocus: true,
-            onPressed: () {
-              setState(() {
-                isSearch = false;
-                searchController.clear();
-                BlocProvider.of<OrderBloc>(context).add(SearchEvent(value: ""));
-              });
-            },
+            onPressed: isSearch
+                ? () {
+                    setState(() {
+                      isSearch = false;
+                      searchController.clear();
+                      FocusScope.of(context).unfocus();
+                      BlocProvider.of<OrderBloc>(context)
+                          .add(SearchEvent(value: ""));
+                    });
+                  }
+                : null,
           )),
       onChanged: (value) {
         BlocProvider.of<OrderBloc>(context).add(SearchEvent(value: value));
@@ -440,11 +443,14 @@ class _OrderState extends State<Order> {
               ),
             ),
             child: IconButton(
-              onPressed: () {
-                setState(() {
-                  isSearch = true;
-                });
-              },
+              onPressed: !isSearch
+                  ? () {
+                      setState(() {
+                        focusNode.requestFocus();
+                        isSearch = true;
+                      });
+                    }
+                  : null,
               icon: Icon(Icons.search),
             ),
           ),

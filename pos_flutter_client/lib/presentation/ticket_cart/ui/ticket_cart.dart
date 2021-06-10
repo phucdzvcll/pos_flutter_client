@@ -1,88 +1,88 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
 import 'package:pos_flutter_client/common/common.dart';
-import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_controller.dart';
+import 'package:pos_flutter_client/presentation/ticket_cart/bloc/ticket_cart_bloc.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/model/ticket.dart';
-import 'package:pos_flutter_client/presentation/ticket_cart/ui/edit_ticket_cart.dart';
 
 class TicKetCart extends StatelessWidget {
-  final TicketCartController ticketCartController;
-
-  TicKetCart({Key? key, required this.ticketCartController}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Color(0xff4CAF50),
-          title: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text("Ticket"),
-              SizedBox(
-                width: 10,
-              ),
-              GetXWrapBuilder<TicketCartController>(
-                initController: ticketCartController,
-                builder: (_) => Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    SizedBox(
-                      width: ticketCartController.ticketCartStateRx.value
-                                  .getCountItem() <
-                              10
-                          ? 25
-                          : (ticketCartController.ticketCartStateRx.value
-                                      .getCountItem() <
-                                  99
-                              ? 35
-                              : 45),
-                      height: 20,
-                      child: SvgPicture.asset(
-                        'images/ic_receipt.svg',
-                        fit: BoxFit.fill,
-                        color: Colors.white,
-                      ),
-                    ),
-                    Text(
-                      ticketCartController.ticketCartStateRx.value
-                          .getCountItem()
-                          .toString(),
-                      style: TextStyle(fontSize: 15),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ),
-          actions: [
-            IconButton(
-                alignment: Alignment.centerLeft,
-                icon: Icon(
-                  Icons.person_add_outlined,
-                ),
-                onPressed: () {}),
-            IconButton(
-                alignment: Alignment.centerLeft,
-                icon: Icon(
-                  Icons.more_vert_outlined,
-                ),
-                onPressed: () {}),
+    return SafeArea(child: BlocBuilder<TicketCartBloc, TicketCartBlocState>(
+      builder: (ctx, state) {
+        return _handleRenderBody(state);
+      },
+    ));
+  }
+
+  Widget _handleRenderBody(TicketCartBlocState state) {
+    if (state is TicketState) {
+      return _renderBody(state);
+    } else {
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+  }
+
+  Scaffold _renderBody(TicketState state) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color(0xff4CAF50),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text("Ticket"),
+            SizedBox(
+              width: 10,
+            ),
+            _headerBuilder(state)
           ],
         ),
-        body: _home(),
-        bottomNavigationBar: Padding(
-          padding: EdgeInsets.all(15),
-          child: GetXWrapBuilder<TicketCartController>(
-            initController: ticketCartController,
-            builder: (_) => _buttonOrder(
-                ticketCartController.ticketCartStateRx.value.getCartAmount()),
+        actions: [
+          IconButton(
+              alignment: Alignment.centerLeft,
+              icon: Icon(
+                Icons.person_add_outlined,
+              ),
+              onPressed: () {}),
+          IconButton(
+              alignment: Alignment.centerLeft,
+              icon: Icon(
+                Icons.more_vert_outlined,
+              ),
+              onPressed: () {}),
+        ],
+      ),
+      body: _home(),
+      bottomNavigationBar:
+          Padding(padding: EdgeInsets.all(15), child: _buttonOrder(state)),
+    );
+  }
+
+  Stack _headerBuilder(TicketState state) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        SizedBox(
+          width: state.getCountItem() < 10
+              ? 25
+              : (state.getCountItem() < 99 ? 35 : 45),
+          height: 20,
+          child: SvgPicture.asset(
+            'images/ic_receipt.svg',
+            fit: BoxFit.fill,
+            color: Colors.white,
           ),
         ),
-      ),
+        Text(
+          state.getCountItem().toString(),
+          style: TextStyle(fontSize: 15),
+        ),
+      ],
     );
   }
 
@@ -100,41 +100,31 @@ class TicKetCart extends StatelessWidget {
             ),
           ),
         ),
-        GetXWrapBuilder<TicketCartController>(
-            builder: (_) => SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
-                      var itemTicket = ticketCartController
-                          .ticketCartStateRx.value.tickets[index];
-                      return InkWell(
-                        onTap: () {
-                          ticketCartController.edit(itemTicket);
-                          Get.to(EditTicketCart(
-                              ticketCartController: ticketCartController));
-                        },
-                        child: _itemCart(itemTicket),
-                      );
-                    },
-                    childCount: ticketCartController
-                        .ticketCartStateRx.value.tickets.length,
-                  ),
-                ),
-            initController: ticketCartController),
-        GetXWrapBuilder<TicketCartController>(
-          initController: ticketCartController,
-          builder: (_) =>
-              _rowTax(ticketCartController.ticketCartStateRx.value.tax),
-        ),
-        GetXWrapBuilder<TicketCartController>(
-          initController: ticketCartController,
-          builder: (_) => _rowTotal(
-              ticketCartController.ticketCartStateRx.value.getCartAmount()),
-        ),
+        // SliverList(
+        //   delegate: SliverChildBuilderDelegate(
+        //     (BuildContext context, int index) {
+        //       var itemTicket =
+        //           ticketCartController.ticketCartStateRx.value.tickets[index];
+        //       return InkWell(
+        //         onTap: () {
+        //           ticketCartController.edit(itemTicket);
+        //           Get.to(EditTicketCart(
+        //               ticketCartController: ticketCartController));
+        //         },
+        //         child: _itemCart(itemTicket),
+        //       );
+        //     },
+        //     childCount:
+        //         ticketCartController.ticketCartStateRx.value.tickets.length,
+        //   ),
+        // ),
+        // _rowTax(ticketCartController.ticketCartStateRx.value.tax),
+        // _rowTotal(ticketCartController.ticketCartStateRx.value.getCartAmount()),
       ],
     );
   }
 
-  var listItemDropDown = ["Dine in", "one", "two", "three"];
+  final listItemDropDown = ["Dine in", "one", "two", "three"];
 
   Widget _dropDown() {
     return DropdownButton<String>(
@@ -282,7 +272,7 @@ class TicKetCart extends StatelessWidget {
     );
   }
 
-  Row _buttonOrder(double totalPrice) {
+  Row _buttonOrder(TicketState state) {
     return Row(
       children: [
         Expanded(
@@ -322,7 +312,7 @@ class TicKetCart extends StatelessWidget {
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
                 Text(
-                  totalPrice.toString(),
+                  state.getTotalPrice().toString(),
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 )
               ],
