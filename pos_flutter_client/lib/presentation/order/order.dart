@@ -1,5 +1,4 @@
-export 'controller/models/category.dart';
-export 'controller/models/item.dart';
-export 'controller/order_controller.dart';
-export 'controller/order_state.dart';
+export 'bloc/order_bloc.dart';
+export 'models/category.dart';
+export 'models/item.dart';
 export 'ui/order.dart';

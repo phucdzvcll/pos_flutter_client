@@ -1,4 +1,4 @@
-import 'package:pos_flutter_client/presentation/order/controller/models/item.dart';
+import 'package:pos_flutter_client/presentation/order/models/item.dart';
 
 class Ticket {
   final Item item;

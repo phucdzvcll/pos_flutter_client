@@ -5,52 +5,65 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:pos_flutter_client/common/common.dart';
 import 'package:pos_flutter_client/presentation/authentication/authentication.dart';
+import 'package:pos_flutter_client/presentation/order/bloc/order_bloc.dart';
+import 'package:pos_flutter_client/presentation/order/models/category.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_controller.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_state.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/ui/ticket_cart.dart';
 
-import '../controller/models/category.dart';
-import '../controller/models/item.dart';
-import '../controller/order_controller.dart';
-import '../controller/order_state.dart';
+import '../models/item.dart';
 
-class Order extends StatelessWidget {
-  final OrderController orderController = OrderController()..getListOrders();
-  final TicketCartController ticketCartController = TicketCartController();
+class Order extends StatefulWidget {
   final String email;
-  final searchController = TextEditingController();
 
-  Order({Key? key, required this.email}) : super(key: key);
+  const Order({Key? key, required this.email}) : super(key: key);
+
+  @override
+  _OrderState createState() => _OrderState();
+}
+
+class _OrderState extends State<Order> {
+  final TicketCartController ticketCartController = TicketCartController();
+  final searchController = TextEditingController();
+  bool isSearch = false;
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Color(0xff4CAF50),
-          title: GetXWrapBuilder<TicketCartController>(
-            initController: ticketCartController,
-            builder: (_) =>
-                _ticketCartHeader(ticketCartController.ticketCartStateRx.value),
+          appBar: AppBar(
+            backgroundColor: Color(0xff4CAF50),
+            title: GetXWrapBuilder<TicketCartController>(
+              initController: ticketCartController,
+              builder: (_) => _ticketCartHeader(
+                  ticketCartController.ticketCartStateRx.value),
+            ),
+            actions: [
+              IconButton(
+                  alignment: Alignment.centerLeft,
+                  icon: Icon(
+                    Icons.person_add_outlined,
+                  ),
+                  onPressed: () {}),
+              IconButton(
+                  alignment: Alignment.centerLeft,
+                  icon: Icon(
+                    Icons.more_vert_outlined,
+                  ),
+                  onPressed: () {}),
+            ],
           ),
-          actions: [
-            IconButton(
-                alignment: Alignment.centerLeft,
-                icon: Icon(
-                  Icons.person_add_outlined,
-                ),
-                onPressed: () {}),
-            IconButton(
-                alignment: Alignment.centerLeft,
-                icon: Icon(
-                  Icons.more_vert_outlined,
-                ),
-                onPressed: () {}),
-          ],
-        ),
-        drawer: _drawer(context),
-        body: Builder(builder: (ctx) => _body(ctx, orderController)),
-      ),
+          drawer: _drawer(context),
+          body: BlocProvider<OrderBloc>(
+            create: (_) {
+              return OrderBloc()..add(InitEvent());
+            },
+            child: BlocBuilder<OrderBloc, OrderState>(
+              builder: (ctx, state) {
+                return _body(ctx, state);
+              },
+            ),
+          )),
     );
   }
 
@@ -68,7 +81,7 @@ class Order extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      email,
+                      widget.email,
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -212,39 +225,36 @@ class Order extends StatelessWidget {
     );
   }
 
-  Widget _body(BuildContext context, OrderController orderController) {
+  Widget _body(BuildContext context, OrderState state) {
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
-        GetXWrapBuilder<OrderController>(
-            builder: (_) => Padding(
-                  padding: EdgeInsets.all(15),
-                  child: _buttonOrder(
-                      ticketCartController.ticketCartStateRx.value),
-                ),
-            initController: orderController),
-        GetXWrapBuilder<OrderController>(
-            initController: orderController,
-            builder: (_) =>
-                _fillBar(orderController.categoryRx.value, context)),
+        // Padding(
+        //   padding: EdgeInsets.all(15),
+        //   child: _buttonOrder(ticketCartController.ticketCartStateRx.value),
+        // ),
         Expanded(
-          child: GetXWrapBuilder<OrderController>(
-            initController: orderController,
-            builder: (_) => _buildState(orderController.orderStateRx.value),
-          ),
+          child: _buildState(state, context),
         )
       ],
     );
   }
 
-  _buildState(OrderItemsState orderState) {
+  _buildState(OrderState orderState, BuildContext context) {
     if (orderState is LoadingOrderState) {
       return Center(
         child: CircularProgressIndicator(),
       );
     } else if (orderState is SuccessOrderState) {
-      return ListView(
-        children: orderState.items.map((item) => itemOrder(item)).toList(),
+      return Column(
+        children: [
+          _fillStateBuilder(orderState, context),
+          Expanded(
+            child: ListView(
+                children:
+                    orderState.items.map((item) => itemOrder(item)).toList()),
+          )
+        ],
       );
     } else {
       return Center(
@@ -311,7 +321,7 @@ class Order extends StatelessWidget {
     );
   }
 
-  Widget _search(bool isVisible) {
+  Widget _search(BuildContext context) {
     return TextField(
       textAlignVertical: TextAlignVertical.center,
       controller: searchController,
@@ -327,42 +337,37 @@ class Order extends StatelessWidget {
           suffixIcon: IconButton(
             color: Colors.grey,
             icon: Icon(Icons.close),
+            autofocus: true,
             onPressed: () {
-              orderController.changeFillBarState();
-              searchController.text = "";
+              setState(() {
+                isSearch = false;
+                searchController.clear();
+                BlocProvider.of<OrderBloc>(context).add(SearchEvent(value: ""));
+              });
             },
           )),
       onChanged: (value) {
-        orderController.fillBySearch(value);
+        BlocProvider.of<OrderBloc>(context).add(SearchEvent(value: value));
       },
     );
   }
 
-  Widget _fillBar(CategoriesState categoriesState, BuildContext context) {
-    return GetXWrapBuilder<OrderController>(
-      builder: (_) => _fillStateBuilder(
-          orderController.fillBarRX.value, categoriesState, context),
-      initController: orderController,
-    );
-  }
-
-  Widget _fillStateBuilder(FillBarState fillBarState,
-      CategoriesState categoriesState, BuildContext context) {
+  Widget _fillStateBuilder(
+      SuccessOrderState successOrderState, BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     return Container(
       decoration:
           BoxDecoration(border: Border.all(color: Colors.grey, width: 0.5)),
       child: Stack(
         children: [
-          _fillMenuDropDown(
-              categoriesState, fillBarState is FillState ? true : false),
+          _fillMenuDropDown(successOrderState.categoriesState, context),
           Positioned(
             right: 0,
             child: AnimatedContainer(
               duration: Duration(milliseconds: 500),
-              width: fillBarState is FillState ? 0 : width,
+              width: isSearch ? width : 0,
               color: Theme.of(context).scaffoldBackgroundColor,
-              child: _search(fillBarState is SearchState),
+              child: _search(context),
             ),
           )
         ],
@@ -370,7 +375,8 @@ class Order extends StatelessWidget {
     );
   }
 
-  Widget _fillMenuDropDown(CategoriesState categoriesState, bool isVisible) {
+  Widget _fillMenuDropDown(
+      CategoriesState categoriesState, BuildContext context) {
     return Row(
       children: [
         Expanded(
@@ -382,7 +388,7 @@ class Order extends StatelessWidget {
           child: DropdownButton<int>(
             onChanged: (int? id) {
               if (id != null) {
-                orderController.fillByCategory(id);
+                BlocProvider.of<OrderBloc>(context).add(FillItemEvent(id: id));
               }
             },
             underline: DecoratedBox(
@@ -421,7 +427,9 @@ class Order extends StatelessWidget {
             ),
             child: IconButton(
               onPressed: () {
-                orderController.changeFillBarState();
+                setState(() {
+                  isSearch = true;
+                });
               },
               icon: Icon(Icons.search),
             ),
@@ -430,59 +438,59 @@ class Order extends StatelessWidget {
       ],
     );
   }
-
-  Row _buttonOrder(TicketCartState ticketCartState) {
-    return Row(
-      children: [
-        Expanded(
-          child: SizedBox(
-            height: 64,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Color(0xff7CB342),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(0),
-                ),
-              ),
-              onPressed: () {},
-              child: Text(
-                "SAVE",
-                style: TextStyle(color: Colors.white, fontSize: 16),
-              ),
-            ),
-          ),
-        ),
-        Expanded(
-          child: SizedBox(
-            height: 64,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Color(0xff7CB342),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(0),
-                ),
-              ),
-              onPressed: () {},
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "CHARGE",
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  ),
-                  Text(
-                    ticketCartState.getCartAmount().formatDouble(),
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  )
-                ],
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 }
+//   Row _buttonOrder(TicketCartState ticketCartState) {
+//     return Row(
+//       children: [
+//         Expanded(
+//           child: SizedBox(
+//             height: 64,
+//             child: ElevatedButton(
+//               style: ElevatedButton.styleFrom(
+//                 primary: Color(0xff7CB342),
+//                 shape: RoundedRectangleBorder(
+//                   borderRadius: BorderRadius.circular(0),
+//                 ),
+//               ),
+//               onPressed: () {},
+//               child: Text(
+//                 "SAVE",
+//                 style: TextStyle(color: Colors.white, fontSize: 16),
+//               ),
+//             ),
+//           ),
+//         ),
+//         Expanded(
+//           child: SizedBox(
+//             height: 64,
+//             child: ElevatedButton(
+//               style: ElevatedButton.styleFrom(
+//                 primary: Color(0xff7CB342),
+//                 shape: RoundedRectangleBorder(
+//                   borderRadius: BorderRadius.circular(0),
+//                 ),
+//               ),
+//               onPressed: () {},
+//               child: Column(
+//                 mainAxisAlignment: MainAxisAlignment.center,
+//                 children: [
+//                   Text(
+//                     "CHARGE",
+//                     style: TextStyle(color: Colors.white, fontSize: 16),
+//                   ),
+//                   Text(
+//                     ticketCartState.getCartAmount().formatDouble(),
+//                     style: TextStyle(color: Colors.white, fontSize: 16),
+//                   )
+//                 ],
+//               ),
+//             ),
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+// }
 //
 // extension HexColor on Color {
 //   /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".

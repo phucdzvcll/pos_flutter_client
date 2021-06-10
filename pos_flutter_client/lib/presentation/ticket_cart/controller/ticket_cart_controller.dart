@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:pos_flutter_client/presentation/order/controller/models/item.dart';
+import 'package:pos_flutter_client/presentation/order/models/item.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/controller/model/ticket.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_state.dart';
 
