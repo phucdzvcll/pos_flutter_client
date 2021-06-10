@@ -57,7 +57,7 @@ class TicKetCart extends StatelessWidget {
               onPressed: () {}),
         ],
       ),
-      body: _home(),
+      body: _home(state),
       bottomNavigationBar:
           Padding(padding: EdgeInsets.all(15), child: _buttonOrder(state)),
     );
@@ -86,7 +86,7 @@ class TicKetCart extends StatelessWidget {
     );
   }
 
-  Widget _home() {
+  Widget _home(TicketState state) {
     return CustomScrollView(
       slivers: [
         SliverToBoxAdapter(
@@ -100,26 +100,24 @@ class TicKetCart extends StatelessWidget {
             ),
           ),
         ),
-        // SliverList(
-        //   delegate: SliverChildBuilderDelegate(
-        //     (BuildContext context, int index) {
-        //       var itemTicket =
-        //           ticketCartController.ticketCartStateRx.value.tickets[index];
-        //       return InkWell(
-        //         onTap: () {
-        //           ticketCartController.edit(itemTicket);
-        //           Get.to(EditTicketCart(
-        //               ticketCartController: ticketCartController));
-        //         },
-        //         child: _itemCart(itemTicket),
-        //       );
-        //     },
-        //     childCount:
-        //         ticketCartController.ticketCartStateRx.value.tickets.length,
-        //   ),
-        // ),
-        // _rowTax(ticketCartController.ticketCartStateRx.value.tax),
-        // _rowTotal(ticketCartController.ticketCartStateRx.value.getCartAmount()),
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (BuildContext context, int index) {
+              var itemTicket = state.tickets[index];
+              return InkWell(
+                onTap: () {
+                  // state.edit(itemTicket);
+                  // Get.to(EditTicketCart(
+                  //     ticketCartController: ticketCartController));
+                },
+                child: _itemCart(itemTicket),
+              );
+            },
+            childCount: state.tickets.length,
+          ),
+        ),
+        _rowTax(state.tax),
+        _rowTotal(state.getCartAmount()),
       ],
     );
   }
