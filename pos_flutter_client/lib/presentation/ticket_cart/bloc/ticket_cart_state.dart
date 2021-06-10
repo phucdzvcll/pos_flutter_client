@@ -1,10 +1,15 @@
-import 'package:pos_flutter_client/presentation/ticket_cart/model/ticket.dart';
+part of 'ticket_cart_bloc.dart';
 
-class TicketCartState {
+@immutable
+abstract class TicketCartBlocState {}
+
+class TicketCartInitial extends TicketCartBlocState {}
+
+class TicketState extends TicketCartBlocState {
   final List<Ticket> tickets;
   final double tax;
 
-  TicketCartState({required this.tax, required this.tickets});
+  TicketState({required this.tax, required this.tickets});
 
   int getCountItem() {
     var count = 0;
@@ -27,7 +32,7 @@ class TicketCartState {
   }
 
 //<editor-fold desc="Data Methods" defaultstate="collapsed">
-  TicketCartState copyWith({
+  TicketState copyWith({
     List<Ticket>? tickets,
     double? tax,
   }) {
@@ -35,7 +40,7 @@ class TicketCartState {
     if (tickets != null) {
       list = List.of(tickets);
     }
-    return new TicketCartState(
+    return new TicketState(
       tickets: list ?? this.tickets,
       tax: tax ?? this.tax,
     );
@@ -49,7 +54,7 @@ class TicketCartState {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is TicketCartState &&
+      (other is TicketState &&
           runtimeType == other.runtimeType &&
           tickets == other.tickets &&
           tax == other.tax);
@@ -59,10 +64,4 @@ class TicketCartState {
 
 //</editor-fold>
 
-}
-
-class EditTicketCartState {
-  final Ticket ticket;
-
-  EditTicketCartState({required this.ticket});
 }

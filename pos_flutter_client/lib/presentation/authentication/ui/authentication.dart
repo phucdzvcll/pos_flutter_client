@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pos_flutter_client/presentation/authentication/bloc/authentication_bloc.dart';
+import 'package:pos_flutter_client/presentation/order/bloc/order_bloc.dart';
 import 'package:pos_flutter_client/presentation/order/ui/order.dart';
+import 'package:pos_flutter_client/presentation/ticket_cart/bloc/ticket_cart_bloc.dart';
 
 import '../../home/home_page.dart';
 
@@ -25,7 +27,16 @@ class Authentication extends StatelessWidget {
     if (state is LogoutAuthenticationState) {
       return HomePage();
     } else if (state is LoggedAuthenticationState) {
-      return Order(email: state.email);
+      return MultiBlocProvider(providers: [
+        BlocProvider<OrderBloc>(
+          create: (_) {
+            return OrderBloc()..add(InitEvent());
+          },
+        ),
+        BlocProvider<TicketCartBloc>(create: (_) {
+          return TicketCartBloc();
+        })
+      ], child: Order(email: state.email));
     } else {
       return Scaffold(
         body: Center(

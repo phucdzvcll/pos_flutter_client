@@ -7,8 +7,8 @@ import 'package:pos_flutter_client/common/common.dart';
 import 'package:pos_flutter_client/presentation/authentication/authentication.dart';
 import 'package:pos_flutter_client/presentation/order/bloc/order_bloc.dart';
 import 'package:pos_flutter_client/presentation/order/models/category.dart';
+import 'package:pos_flutter_client/presentation/ticket_cart/bloc/ticket_cart_bloc.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_controller.dart';
-import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_state.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/ui/ticket_cart.dart';
 
 import '../models/item.dart';
@@ -28,42 +28,48 @@ class _OrderState extends State<Order> {
   bool isSearch = false;
 
   @override
+  void dispose() {
+    super.dispose();
+    searchController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Color(0xff4CAF50),
-            title: GetXWrapBuilder<TicketCartController>(
-              initController: ticketCartController,
-              builder: (_) => _ticketCartHeader(
-                  ticketCartController.ticketCartStateRx.value),
-            ),
-            actions: [
-              IconButton(
-                  alignment: Alignment.centerLeft,
-                  icon: Icon(
-                    Icons.person_add_outlined,
-                  ),
-                  onPressed: () {}),
-              IconButton(
-                  alignment: Alignment.centerLeft,
-                  icon: Icon(
-                    Icons.more_vert_outlined,
-                  ),
-                  onPressed: () {}),
-            ],
-          ),
-          drawer: _drawer(context),
-          body: BlocProvider<OrderBloc>(
-            create: (_) {
-              return OrderBloc()..add(InitEvent());
+        appBar: AppBar(
+          backgroundColor: Color(0xff4CAF50),
+          title: BlocBuilder<TicketCartBloc, TicketCartBlocState>(
+            builder: (ctx, state) {
+              return state is TicketState
+                  ? _ticketCartHeader(state)
+                  : Center(
+                      child: CircularProgressIndicator(),
+                    );
             },
-            child: BlocBuilder<OrderBloc, OrderState>(
-              builder: (ctx, state) {
-                return _body(ctx, state);
-              },
-            ),
-          )),
+          ),
+          actions: [
+            IconButton(
+                alignment: Alignment.centerLeft,
+                icon: Icon(
+                  Icons.person_add_outlined,
+                ),
+                onPressed: () {}),
+            IconButton(
+                alignment: Alignment.centerLeft,
+                icon: Icon(
+                  Icons.more_vert_outlined,
+                ),
+                onPressed: () {}),
+          ],
+        ),
+        drawer: _drawer(context),
+        body: BlocBuilder<OrderBloc, OrderState>(
+          builder: (ctx, state) {
+            return _body(ctx, state);
+          },
+        ),
+      ),
     );
   }
 
@@ -182,7 +188,7 @@ class _OrderState extends State<Order> {
     );
   }
 
-  InkWell _ticketCartHeader(TicketCartState ticketCartState) {
+  InkWell _ticketCartHeader(TicketState ticketCartState) {
     return InkWell(
       onTap: () {
         Get.to(
@@ -229,10 +235,16 @@ class _OrderState extends State<Order> {
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
-        // Padding(
-        //   padding: EdgeInsets.all(15),
-        //   child: _buttonOrder(ticketCartController.ticketCartStateRx.value),
-        // ),
+        Padding(
+          padding: EdgeInsets.all(15),
+          child: BlocBuilder<TicketCartBloc, TicketCartBlocState>(
+            builder: (ctx, state) {
+              return state is TicketState
+                  ? _buttonOrder(state)
+                  : Center(child: CircularProgressIndicator());
+            },
+          ),
+        ),
         Expanded(
           child: _buildState(state, context),
         )
@@ -251,8 +263,9 @@ class _OrderState extends State<Order> {
           _fillStateBuilder(orderState, context),
           Expanded(
             child: ListView(
-                children:
-                    orderState.items.map((item) => itemOrder(item)).toList()),
+                children: orderState.items
+                    .map((item) => itemOrder(item, context))
+                    .toList()),
           )
         ],
       );
@@ -263,11 +276,12 @@ class _OrderState extends State<Order> {
     }
   }
 
-  Widget itemOrder(Item item) {
+  Widget itemOrder(Item item, BuildContext context) {
     return IntrinsicHeight(
       child: InkWell(
         onTap: () {
-          ticketCartController.addToTicketCart(item);
+          BlocProvider.of<TicketCartBloc>(context)
+              .add(AddToCartEvent(item: item));
         },
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -439,58 +453,58 @@ class _OrderState extends State<Order> {
     );
   }
 }
-//   Row _buttonOrder(TicketCartState ticketCartState) {
-//     return Row(
-//       children: [
-//         Expanded(
-//           child: SizedBox(
-//             height: 64,
-//             child: ElevatedButton(
-//               style: ElevatedButton.styleFrom(
-//                 primary: Color(0xff7CB342),
-//                 shape: RoundedRectangleBorder(
-//                   borderRadius: BorderRadius.circular(0),
-//                 ),
-//               ),
-//               onPressed: () {},
-//               child: Text(
-//                 "SAVE",
-//                 style: TextStyle(color: Colors.white, fontSize: 16),
-//               ),
-//             ),
-//           ),
-//         ),
-//         Expanded(
-//           child: SizedBox(
-//             height: 64,
-//             child: ElevatedButton(
-//               style: ElevatedButton.styleFrom(
-//                 primary: Color(0xff7CB342),
-//                 shape: RoundedRectangleBorder(
-//                   borderRadius: BorderRadius.circular(0),
-//                 ),
-//               ),
-//               onPressed: () {},
-//               child: Column(
-//                 mainAxisAlignment: MainAxisAlignment.center,
-//                 children: [
-//                   Text(
-//                     "CHARGE",
-//                     style: TextStyle(color: Colors.white, fontSize: 16),
-//                   ),
-//                   Text(
-//                     ticketCartState.getCartAmount().formatDouble(),
-//                     style: TextStyle(color: Colors.white, fontSize: 16),
-//                   )
-//                 ],
-//               ),
-//             ),
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-// }
+
+Row _buttonOrder(TicketState ticketCartState) {
+  return Row(
+    children: [
+      Expanded(
+        child: SizedBox(
+          height: 64,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Color(0xff7CB342),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(0),
+              ),
+            ),
+            onPressed: () {},
+            child: Text(
+              "SAVE",
+              style: TextStyle(color: Colors.white, fontSize: 16),
+            ),
+          ),
+        ),
+      ),
+      Expanded(
+        child: SizedBox(
+          height: 64,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Color(0xff7CB342),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(0),
+              ),
+            ),
+            onPressed: () {},
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "CHARGE",
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+                Text(
+                  ticketCartState.getCartAmount().formatDouble(),
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    ],
+  );
+}
 //
 // extension HexColor on Color {
 //   /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".

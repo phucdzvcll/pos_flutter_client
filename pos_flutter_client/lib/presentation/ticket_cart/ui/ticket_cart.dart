@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:pos_flutter_client/common/common.dart';
-import 'package:pos_flutter_client/presentation/ticket_cart/controller/model/ticket.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_controller.dart';
+import 'package:pos_flutter_client/presentation/ticket_cart/model/ticket.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/ui/edit_ticket_cart.dart';
 
 class TicKetCart extends StatelessWidget {
