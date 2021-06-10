@@ -1,9 +1,8 @@
 POS App
 
 ## Important ingredients 
-- [State Management Getx](https://pub.dev/packages/get#state-management)
+- [State Management BloC](https://bloclibrary.dev/#/)
 - [Dependency management Getx](https://pub.dev/packages/get#dependency-management)
-- [Route Management Getx](https://pub.dev/packages/get#route-management)
 - [Firebase](https://firebase.flutter.dev/)
 ## Plugin 
 
