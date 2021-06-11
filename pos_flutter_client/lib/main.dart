@@ -9,7 +9,6 @@ import 'package:pos_flutter_client/data/remote/api_service.dart';
 import 'package:pos_flutter_client/domain/domain.dart';
 import 'package:pos_flutter_client/presentation/authentication/bloc/authentication_bloc.dart';
 import 'package:pos_flutter_client/presentation/authentication/ui/authentication.dart';
-import 'package:pos_flutter_client/presentation/order/bloc/order_bloc.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/bloc/ticket_cart_bloc.dart';
 
 void main() async {
@@ -54,16 +53,11 @@ class MyApp extends StatelessWidget {
               return AuthenticationBloc()..add(InitAuthenticationEvent());
             },
           ),
-          BlocProvider<OrderBloc>(
-            create: (_) {
-              return OrderBloc()..add(InitEvent());
-            },
-          ),
           BlocProvider<TicketCartBloc>(create: (_) {
             return TicketCartBloc();
           })
         ],
-        child: GetMaterialApp(
+        child: MaterialApp(
           debugShowCheckedModeBanner: false,
           initialRoute: '/',
           routes: {'/': (context) => Authentication()},

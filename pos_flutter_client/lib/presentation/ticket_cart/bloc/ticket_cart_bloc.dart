@@ -11,7 +11,6 @@ part 'ticket_cart_state.dart';
 class TicketCartBloc extends Bloc<TicketCartEvent, TicketCartBlocState> {
   TicketCartBloc() : super(TicketState(tax: 0.0, tickets: []));
   List<Ticket> _ticketCart = [];
-  TicketState ticketState = TicketState(tax: 0.0, tickets: []);
 
   Ticket? _oldEditTicket;
 
@@ -34,8 +33,7 @@ class TicketCartBloc extends Bloc<TicketCartEvent, TicketCartBlocState> {
       } else {
         _ticketCart.add(Ticket(item: event.item, amount: 1));
       }
-      ticketState = ticketState.copyWith(tickets: _ticketCart);
-      yield ticketState;
+      yield TicketState(tax: 0.0, tickets: _ticketCart);
     } else if (event is EditTicketEvent) {
       if (_oldEditTicket != null) {
         var index =
@@ -46,10 +44,13 @@ class TicketCartBloc extends Bloc<TicketCartEvent, TicketCartBlocState> {
           } else {
             _ticketCart[index] = event.ticket;
           }
-          ticketState = ticketState.copyWith(tickets: _ticketCart);
-          yield ticketState;
+          yield TicketState(tax: 0.0, tickets: _ticketCart);
         }
       }
+    } else if (event is ClearEvent) {
+      _ticketCart.clear();
+      _oldEditTicket = null;
+      yield TicketState(tax: 0.0, tickets: _ticketCart);
     }
   }
 }

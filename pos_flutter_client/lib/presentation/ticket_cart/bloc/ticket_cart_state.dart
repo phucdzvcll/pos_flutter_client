@@ -6,10 +6,12 @@ abstract class TicketCartBlocState {}
 class TicketCartInitial extends TicketCartBlocState {}
 
 class TicketState extends TicketCartBlocState {
-  final List<Ticket> tickets;
+  final List<Ticket> tickets = [];
   final double tax;
 
-  TicketState({required this.tax, required this.tickets});
+  TicketState({required this.tax, required List<Ticket> tickets}) {
+    this.tickets.addAll(tickets);
+  }
 
   int getCountItem() {
     var count = 0;
@@ -32,20 +34,6 @@ class TicketState extends TicketCartBlocState {
   }
 
 //<editor-fold desc="Data Methods" defaultstate="collapsed">
-  TicketState copyWith({
-    List<Ticket>? tickets,
-    double? tax,
-  }) {
-    List<Ticket>? list;
-    if (tickets != null) {
-      list = List.of(tickets);
-    }
-    return new TicketState(
-      tickets: list ?? this.tickets,
-      tax: tax ?? this.tax,
-    );
-  }
-
   @override
   String toString() {
     return 'TicketCartState{tickets: $tickets, tax: $tax}';

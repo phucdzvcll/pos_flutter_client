@@ -21,52 +21,55 @@ class Order extends StatefulWidget {
 }
 
 class _OrderState extends State<Order> {
-  final searchController = TextEditingController();
+  final _searchController = TextEditingController();
   final FocusNode focusNode = FocusNode();
   bool isSearch = false;
 
   @override
   void dispose() {
     super.dispose();
-    searchController.dispose();
+    _searchController.dispose();
     focusNode.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Color(0xff4CAF50),
-          title: BlocBuilder<TicketCartBloc, TicketCartBlocState>(
+    return BlocProvider<OrderBloc>(
+      create: (_) => OrderBloc()..add(InitEvent()),
+      child: SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Color(0xff4CAF50),
+            title: BlocBuilder<TicketCartBloc, TicketCartBlocState>(
+              builder: (ctx, state) {
+                return state is TicketState
+                    ? _ticketCartHeader(state, context)
+                    : Center(
+                        child: CircularProgressIndicator(),
+                      );
+              },
+            ),
+            actions: [
+              IconButton(
+                  alignment: Alignment.centerLeft,
+                  icon: Icon(
+                    Icons.person_add_outlined,
+                  ),
+                  onPressed: () {}),
+              IconButton(
+                  alignment: Alignment.centerLeft,
+                  icon: Icon(
+                    Icons.more_vert_outlined,
+                  ),
+                  onPressed: () {}),
+            ],
+          ),
+          drawer: _drawer(context),
+          body: BlocBuilder<OrderBloc, OrderState>(
             builder: (ctx, state) {
-              return state is TicketState
-                  ? _ticketCartHeader(state, context)
-                  : Center(
-                      child: CircularProgressIndicator(),
-                    );
+              return _body(ctx, state);
             },
           ),
-          actions: [
-            IconButton(
-                alignment: Alignment.centerLeft,
-                icon: Icon(
-                  Icons.person_add_outlined,
-                ),
-                onPressed: () {}),
-            IconButton(
-                alignment: Alignment.centerLeft,
-                icon: Icon(
-                  Icons.more_vert_outlined,
-                ),
-                onPressed: () {}),
-          ],
-        ),
-        drawer: _drawer(context),
-        body: BlocBuilder<OrderBloc, OrderState>(
-          builder: (ctx, state) {
-            return _body(ctx, state);
-          },
         ),
       ),
     );
@@ -333,7 +336,7 @@ class _OrderState extends State<Order> {
   Widget _search(BuildContext context) {
     return TextField(
       textAlignVertical: TextAlignVertical.center,
-      controller: searchController,
+      controller: _searchController,
       focusNode: focusNode,
       decoration: InputDecoration(
           border: InputBorder.none,
@@ -352,8 +355,9 @@ class _OrderState extends State<Order> {
                 ? () {
                     setState(() {
                       isSearch = false;
-                      searchController.clear();
-                      FocusScope.of(context).unfocus();
+                      _searchController.clear();
+                      focusNode.unfocus();
+                      _searchController.clear();
                       BlocProvider.of<OrderBloc>(context)
                           .add(SearchEvent(value: ""));
                     });

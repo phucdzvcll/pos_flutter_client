@@ -14,3 +14,5 @@ class EditTicketEvent extends TicketCartEvent {
 
   EditTicketEvent({required this.ticket});
 }
+
+class ClearEvent extends TicketCartEvent {}

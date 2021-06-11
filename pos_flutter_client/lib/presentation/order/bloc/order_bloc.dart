@@ -16,7 +16,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
   final GetOrderUseCase getOrderUseCase = Get.find();
   List<Item> _items = [];
   List<Category> _categories = [];
-  int currentId = 0;
+  int _currentCategoryId = 0;
 
   @override
   Stream<OrderState> mapEventToState(
@@ -32,33 +32,33 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
   }
 
   Stream<OrderState> _handleSearch(String value) async* {
-    if (currentId == 0) {
+    if (_currentCategoryId == 0) {
       yield SuccessOrderState(
           items: _items
               .where((item) => item.name.toLowerCase().contains(value))
               .toList(),
           categoriesState: CategoriesState(
-              categories: _categories, selectedCategoryId: currentId));
+              categories: _categories, selectedCategoryId: _currentCategoryId));
     } else {
       yield SuccessOrderState(
           items: _items
-              .where((item) =>
-                  (item.categoryId == currentId && item.name.contains(value)))
+              .where((item) => (item.categoryId == _currentCategoryId &&
+                  item.name.toLowerCase().contains(value)))
               .toList(),
           categoriesState: CategoriesState(
-              categories: _categories, selectedCategoryId: currentId));
+              categories: _categories, selectedCategoryId: _currentCategoryId));
     }
   }
 
   Stream<OrderState> _handleFillItem(FillItemEvent event) async* {
     if (event.id == 0) {
-      currentId = 0;
+      _currentCategoryId = 0;
       yield SuccessOrderState(
           items: _items.toList(),
           categoriesState:
               CategoriesState(categories: _categories, selectedCategoryId: 0));
     } else {
-      currentId = event.id;
+      _currentCategoryId = event.id;
       yield SuccessOrderState(
           items: _items.where((item) => item.categoryId == event.id).toList(),
           categoriesState: CategoriesState(
