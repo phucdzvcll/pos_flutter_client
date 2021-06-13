@@ -1,5 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pos_flutter_client/generated/locale_keys.g.dart';
+import 'package:pos_flutter_client/presentation/home/switch.dart';
 import 'package:pos_flutter_client/presentation/login/bloc/login_bloc.dart';
 import 'package:pos_flutter_client/presentation/login/ui/login.dart';
 import 'package:pos_flutter_client/presentation/register/bloc/register_bloc.dart';
@@ -22,7 +25,16 @@ class HomePage extends StatelessWidget {
                   child: SizedBox(
                     width: double.infinity,
                     height: MediaQuery.of(context).size.width,
-                    child: Image.asset('images/logo.png'),
+                    child: Stack(children: [
+                      Image.asset('assets/images/logo.png'),
+                      Positioned(
+                        right: 10,
+                        top: 10,
+                        child: Builder(
+                          builder: (ctx) => SwitchWidget(),
+                        ),
+                      )
+                    ]),
                   ),
                 ),
                 Expanded(
@@ -48,7 +60,7 @@ class HomePage extends StatelessWidget {
                                 ),
                               );
                             },
-                            child: Text("REGISTER"),
+                            child: Text(LocaleKeys.btn_register.tr()),
                             color: Color(0xff74b83d),
                             elevation: 0,
                             textColor: Colors.white,
@@ -74,7 +86,7 @@ class HomePage extends StatelessWidget {
                                 ),
                               );
                             },
-                            child: Text("LOGIN"),
+                            child: Text(LocaleKeys.btn_login.tr()),
                             color: Colors.white,
                             shape: OutlineInputBorder(
                                 borderSide: BorderSide(

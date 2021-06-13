@@ -1,6 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pos_flutter_client/generated/locale_keys.g.dart';
 import 'package:pos_flutter_client/presentation/authentication/bloc/authentication_bloc.dart';
 import 'package:pos_flutter_client/presentation/login/bloc/login_bloc.dart';
 
@@ -35,7 +37,7 @@ class _LoginState extends State<Login> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Login"),
+          title: Text(LocaleKeys.btn_login).tr(),
         ),
         body: BlocBuilder<LoginBloc, LoginState>(
           builder: (ctx, state) {
@@ -48,10 +50,12 @@ class _LoginState extends State<Login> {
                 builder: (ctx, state) => Form(
                   key: _keyForm,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 40, horizontal: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: ListView(
                       children: [
+                        const SizedBox(
+                          height: 40,
+                        ),
                         Visibility(
                           visible: state is LoginError ? true : false,
                           child: Align(
@@ -90,7 +94,7 @@ class _LoginState extends State<Login> {
                           controller: _passController,
                           obscureText: isSee ?? true,
                           decoration: InputDecoration(
-                            hintText: 'Password',
+                            hintText: LocaleKeys.password.tr(),
                             suffixIcon: IconButton(
                               icon: Icon(Icons.visibility_off_outlined),
                               onPressed: () {
@@ -119,9 +123,12 @@ class _LoginState extends State<Login> {
                               }
                             },
                             textColor: Colors.white,
-                            child: Text("NEXT"),
+                            child: Text(LocaleKeys.btn_login.tr()),
                           ),
-                        )
+                        ),
+                        const SizedBox(
+                          height: 40,
+                        ),
                       ],
                     ),
                   ),

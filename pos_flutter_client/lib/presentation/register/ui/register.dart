@@ -1,6 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pos_flutter_client/generated/locale_keys.g.dart';
 import 'package:pos_flutter_client/presentation/authentication/bloc/authentication_bloc.dart';
 import 'package:pos_flutter_client/presentation/register/bloc/register_bloc.dart';
 
@@ -35,7 +37,7 @@ class _RegisterState extends State<Register> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Register"),
+          title: Text(LocaleKeys.btn_register).tr(),
         ),
         body: BlocBuilder<RegisterBloc, RegisterState>(
           builder: (ctx, state) {
@@ -48,10 +50,12 @@ class _RegisterState extends State<Register> {
                 builder: (ctx, state) => Form(
                   key: _keyForm,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 40, horizontal: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: ListView(
                       children: [
+                        const SizedBox(
+                          height: 40,
+                        ),
                         Visibility(
                           visible: state is RegisterError ? true : false,
                           child: Align(
@@ -90,7 +94,7 @@ class _RegisterState extends State<Register> {
                           controller: _passController,
                           obscureText: isSee ?? true,
                           decoration: InputDecoration(
-                            hintText: 'Password',
+                            hintText: LocaleKeys.password.tr(),
                             suffixIcon: IconButton(
                               icon: Icon(Icons.visibility_off_outlined),
                               onPressed: () {
@@ -119,9 +123,12 @@ class _RegisterState extends State<Register> {
                               }
                             },
                             textColor: Colors.white,
-                            child: Text("NEXT"),
+                            child: Text(LocaleKeys.btn_register.tr()),
                           ),
-                        )
+                        ),
+                        const SizedBox(
+                          height: 40,
+                        ),
                       ],
                     ),
                   ),
