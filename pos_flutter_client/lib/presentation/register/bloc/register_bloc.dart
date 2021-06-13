@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
+import 'package:pos_flutter_client/generated/locale_keys.g.dart';
 
 part 'register_event.dart';
 part 'register_state.dart';
@@ -24,12 +26,9 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         }
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
-          print('The password provided is too weak.');
-          yield RegisterError(errorMess: "The password provided is too weak.");
+          yield RegisterError(errorMess: LocaleKeys.password_weak.tr());
         } else if (e.code == 'email-already-in-use') {
-          print('The account already exists for that email.');
-          yield RegisterError(
-              errorMess: "The account already exists for that email.");
+          yield RegisterError(errorMess: LocaleKeys.email_already_in_use.tr());
         }
       }
     }

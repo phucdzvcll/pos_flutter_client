@@ -1,8 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pos_flutter_client/common/switch_change_language.dart';
 import 'package:pos_flutter_client/generated/locale_keys.g.dart';
-import 'package:pos_flutter_client/presentation/home/switch.dart';
 import 'package:pos_flutter_client/presentation/login/bloc/login_bloc.dart';
 import 'package:pos_flutter_client/presentation/login/ui/login.dart';
 import 'package:pos_flutter_client/presentation/register/bloc/register_bloc.dart';

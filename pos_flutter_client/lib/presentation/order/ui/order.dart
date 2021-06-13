@@ -1,8 +1,11 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pos_flutter_client/common/common.dart';
+import 'package:pos_flutter_client/common/switch_change_language.dart';
+import 'package:pos_flutter_client/generated/locale_keys.g.dart';
 import 'package:pos_flutter_client/presentation/authentication/authentication.dart';
 import 'package:pos_flutter_client/presentation/order/bloc/order_bloc.dart';
 import 'package:pos_flutter_client/presentation/order/models/category.dart';
@@ -79,40 +82,50 @@ class _OrderState extends State<Order> {
     return Drawer(
       child: ListView(
         children: <Widget>[
-          DecoratedBox(
-            decoration: BoxDecoration(color: Colors.green),
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
-              child: SizedBox(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      widget.email,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24),
+          Stack(
+            children: [
+              DecoratedBox(
+                decoration: BoxDecoration(color: Colors.green),
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          widget.email,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24),
+                        ),
+                        Text(
+                          'POS 1',
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
+                        Text(
+                          'p5k',
+                          style: TextStyle(color: Colors.white, fontSize: 14),
+                        ),
+                      ],
                     ),
-                    Text(
-                      'POS 1',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
-                    ),
-                    Text(
-                      'p5k',
-                      style: TextStyle(color: Colors.white, fontSize: 14),
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            ),
+              Positioned(
+                bottom: 0,
+                right: 10,
+                child: SwitchWidget(),
+              )
+            ],
           ),
           ListTile(
             leading: Icon(
               Icons.shopping_basket,
             ),
-            title: Text('Sale'),
+            title: Text(LocaleKeys.sale.tr()),
             onTap: () {
               Navigator.pop(context);
             },
@@ -121,7 +134,7 @@ class _OrderState extends State<Order> {
             leading: Icon(
               Icons.receipt,
             ),
-            title: Text('Receipts'),
+            title: Text(LocaleKeys.receipts.tr()),
             onTap: () {
               Navigator.pop(context);
             },
@@ -130,14 +143,14 @@ class _OrderState extends State<Order> {
             leading: Icon(
               Icons.list,
             ),
-            title: Text('Items'),
+            title: Text(LocaleKeys.items.tr()),
             onTap: () {
               Navigator.pop(context);
             },
           ),
           ListTile(
             leading: Icon(Icons.settings),
-            title: Text('Setting'),
+            title: Text(LocaleKeys.setting.tr()),
             onTap: () {
               Navigator.pop(context);
             },
@@ -149,7 +162,7 @@ class _OrderState extends State<Order> {
             leading: Icon(
               Icons.insert_chart,
             ),
-            title: Text('Black office'),
+            title: Text(LocaleKeys.black_office.tr()),
             onTap: () {
               Navigator.pop(context);
             },
@@ -158,7 +171,7 @@ class _OrderState extends State<Order> {
             leading: Icon(
               Icons.redeem,
             ),
-            title: Text('App'),
+            title: Text(LocaleKeys.app.tr()),
             onTap: () {
               Navigator.pop(context);
             },
@@ -167,7 +180,7 @@ class _OrderState extends State<Order> {
             leading: Icon(
               Icons.help_outline,
             ),
-            title: Text('Help'),
+            title: Text(LocaleKeys.help.tr()),
             onTap: () {
               Navigator.pop(context);
             },
@@ -179,7 +192,7 @@ class _OrderState extends State<Order> {
             leading: Icon(
               Icons.logout_outlined,
             ),
-            title: Text('Logout'),
+            title: Text(LocaleKeys.logout.tr()),
             onTap: () {
               BlocProvider.of<AuthenticationBloc>(context)
                   .add(LogoutAuthenticationEvent());
@@ -198,7 +211,7 @@ class _OrderState extends State<Order> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text("Ticket"),
+          Text(LocaleKeys.btn_ticket.tr()),
           SizedBox(
             width: 10,
           ),
@@ -211,7 +224,7 @@ class _OrderState extends State<Order> {
                     : (ticketCartState.getCountItem() < 99 ? 35 : 45),
                 height: 20,
                 child: SvgPicture.asset(
-                  'images/ic_receipt.svg',
+                  'assets/images/ic_receipt.svg',
                   fit: BoxFit.fill,
                   color: Colors.white,
                 ),
@@ -345,7 +358,7 @@ class _OrderState extends State<Order> {
           errorBorder: InputBorder.none,
           disabledBorder: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(horizontal: 15),
-          hintText: "Search",
+          hintText: LocaleKeys.search.tr(),
           hintStyle: TextStyle(color: Colors.grey),
           suffixIcon: IconButton(
             color: Colors.grey,
@@ -476,7 +489,7 @@ Row _buttonOrder(TicketState ticketCartState) {
             ),
             onPressed: () {},
             child: Text(
-              "SAVE",
+              LocaleKeys.btn_save.tr(),
               style: TextStyle(color: Colors.white, fontSize: 16),
             ),
           ),
@@ -497,7 +510,7 @@ Row _buttonOrder(TicketState ticketCartState) {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "CHARGE",
+                  LocaleKeys.btn_charge.tr(),
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
                 Text(

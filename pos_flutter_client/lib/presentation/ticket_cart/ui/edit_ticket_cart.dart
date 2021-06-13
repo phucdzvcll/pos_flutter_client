@@ -1,6 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pos_flutter_client/generated/locale_keys.g.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/bloc/ticket_cart_bloc.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/model/ticket.dart';
 
@@ -53,7 +55,7 @@ class _EditTicketCartState extends State<EditTicketCart> {
                 Navigator.pop(context);
               },
               child: Text(
-                "SAVE",
+                LocaleKeys.btn_save.tr(),
                 style: TextStyle(color: Colors.green),
               ),
             ),
@@ -82,7 +84,7 @@ class _EditTicketCartState extends State<EditTicketCart> {
           child: Padding(
             padding: EdgeInsets.only(top: 30, left: 10, right: 10),
             child: Text(
-              "Quantity",
+              LocaleKeys.quantity_label.tr(),
               style: TextStyle(color: Colors.green, fontSize: 14),
             ),
           ),
@@ -137,7 +139,7 @@ class _EditTicketCartState extends State<EditTicketCart> {
           child: Padding(
             padding: EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 20),
             child: Text(
-              "Comment",
+              LocaleKeys.comment_label.tr(),
               textAlign: TextAlign.left,
               style: TextStyle(color: Colors.green, fontSize: 14),
             ),
@@ -147,7 +149,9 @@ class _EditTicketCartState extends State<EditTicketCart> {
           padding: EdgeInsets.symmetric(horizontal: 10),
           child: TextField(
             controller: commentController,
-            decoration: InputDecoration(hintText: "Enter your comment"),
+            decoration: InputDecoration(
+              hintText: LocaleKeys.comment.tr(),
+            ),
           ),
         )
       ],
