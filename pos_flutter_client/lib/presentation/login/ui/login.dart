@@ -14,15 +14,20 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  final FocusNode _focusNodeEmail = FocusNode();
+  final FocusNode _focusNodePassword = FocusNode();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
   final _keyForm = GlobalKey<FormState>();
-  bool? isSee;
+  bool? _isSee;
+  bool? _isEmail = true;
+  bool? _isPassword = true;
 
   @override
   void initState() {
     super.initState();
-    isSee = true;
+    _isSee = true;
+    _focusNodeEmail.requestFocus();
   }
 
   @override
@@ -30,6 +35,7 @@ class _LoginState extends State<Login> {
     super.dispose();
     _emailController.dispose();
     _passController.dispose();
+    _focusNodeEmail.dispose();
   }
 
   @override
@@ -70,36 +76,54 @@ class _LoginState extends State<Login> {
                           height: 20,
                         ),
                         TextFormField(
+                          focusNode: _focusNodeEmail,
+                          autofocus: true,
                           controller: _emailController,
-                          decoration: InputDecoration(hintText: 'Email'),
-                          validator: (email) {
-                            if (email != null) {
-                              if (!EmailValidator.validate(email)) {
-                                return "Please enter email";
-                              }
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                              hintText: 'Email',
+                              errorText: !(_isEmail!)
+                                  ? LocaleKeys.warning_email.tr()
+                                  : null),
+                          onChanged: (email) {
+                            if (!EmailValidator.validate(email)) {
+                              setState(() {
+                                _isEmail = false;
+                              });
+                            } else {
+                              setState(() {
+                                _isEmail = true;
+                              });
                             }
-                            return null;
                           },
                         ),
                         const SizedBox(height: 30),
                         TextFormField(
-                          validator: (password) {
-                            if (password != null) {
-                              if (password.length < 6) {
-                                return "Please enter at least 6 characters";
-                              }
+                          focusNode: _focusNodePassword,
+                          onChanged: (password) {
+                            if (password.length < 6) {
+                              setState(() {
+                                _isPassword = false;
+                              });
+                            } else {
+                              setState(() {
+                                _isPassword = true;
+                              });
                             }
-                            return null;
                           },
                           controller: _passController,
-                          obscureText: isSee ?? true,
+                          obscureText: _isSee ?? true,
+                          onFieldSubmitted: (v) => _submitForm(ctx),
                           decoration: InputDecoration(
                             hintText: LocaleKeys.password.tr(),
+                            errorText: !(_isPassword!)
+                                ? LocaleKeys.warning_password.tr()
+                                : null,
                             suffixIcon: IconButton(
                               icon: Icon(Icons.visibility_off_outlined),
                               onPressed: () {
                                 setState(() {
-                                  isSee = !(isSee ?? false);
+                                  _isSee = !(_isSee ?? false);
                                 });
                               },
                             ),
@@ -114,13 +138,7 @@ class _LoginState extends State<Login> {
                           child: MaterialButton(
                             color: Color(0xff7CB342),
                             onPressed: () {
-                              if (_keyForm.currentState != null &&
-                                  _keyForm.currentState!.validate()) {
-                                BlocProvider.of<LoginBloc>(ctx).add(
-                                    LoggingEvent(
-                                        email: _emailController.text,
-                                        password: _passController.text));
-                              }
+                              _submitForm(ctx);
                             },
                             textColor: Colors.white,
                             child: Text(LocaleKeys.btn_login.tr()),
@@ -139,5 +157,12 @@ class _LoginState extends State<Login> {
         ),
       ),
     );
+  }
+
+  void _submitForm(BuildContext ctx) {
+    if (_keyForm.currentState != null && _keyForm.currentState!.validate()) {
+      BlocProvider.of<LoginBloc>(ctx).add(LoggingEvent(
+          email: _emailController.text, password: _passController.text));
+    }
   }
 }

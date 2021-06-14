@@ -29,7 +29,6 @@ class HomePage extends StatelessWidget {
                       Image.asset('assets/images/logo.png'),
                       Positioned(
                         right: 10,
-                        top: 10,
                         child: Builder(
                           builder: (ctx) => SwitchWidget(),
                         ),
