@@ -15,12 +15,12 @@ POS App
 - Ui will be updated through GetxController
 
 ## Screenshots
+![](images/change_language_1.gif)
+![](images/change_language_2.gif)
 ![](images/register.gif)
 ![](images/login.gif)
 ![](images/fill_search.gif)
-![](images/pick_item.gif)
-![](images/eidt_item_cart.gif)
-![](images/remove_item_cart.gif)
+![](images/edit_ticket.gif)
 
 ## Dev Tools Screenshots
 ![](images/dev_tools/performance.png)
