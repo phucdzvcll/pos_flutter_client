@@ -3,11 +3,13 @@ POS App
 ## Important ingredients 
 - [State Management BloC](https://bloclibrary.dev/#/)
 - [Dependency management Getx](https://pub.dev/packages/get#dependency-management)
+- [Multi language](https://pub.dev/packages/easy_localization)
 - [Firebase](https://firebase.flutter.dev/)
 ## Plugin 
 
 - [Dart data class](https://plugins.jetbrains.com/plugin/12429-dart-data-class)
 - [Json to dart](https://plugins.jetbrains.com/plugin/12737-json-to-dart-class-jsontodartclass-)
+- [Bloc](https://plugins.jetbrains.com/plugin/12129-bloc)
 
 ## Rule
 
