@@ -1,6 +1,10 @@
 POS App
+## State Management Versions 
 
+- [State Management with Getx](https://github.com/phucdzvcll/pos_flutter_client/tree/main)
+- [State Management with BloC](https://github.com/phucdzvcll/pos_flutter_client/tree/bloc)
 ## Important ingredients 
+
 - [State Management BloC](https://bloclibrary.dev/#/)
 - [Dependency management Getx](https://pub.dev/packages/get#dependency-management)
 - [Multi language](https://pub.dev/packages/easy_localization)
@@ -17,6 +21,7 @@ POS App
 - Ui will be updated through GetxController
 
 ## Screenshots
+
 ![](images/change_language_1.gif)
 ![](images/change_language_2.gif)
 ![](images/register.gif)
@@ -25,6 +30,7 @@ POS App
 ![](images/edit_ticket.gif)
 
 ## Dev Tools Screenshots
+
 ![](images/dev_tools/performance.png)
 ![](images/dev_tools/memory.png)
 ![](images/dev_tools/CPU_profiler.png)
