@@ -1,15 +1,18 @@
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:pos_flutter_client/common/common.dart';
 import 'package:pos_flutter_client/presentation/login/controller/login_controller.dart';
 
 class Login extends StatelessWidget {
+  final FocusNode _focusNodeEmail = FocusNode()..requestFocus();
+  final FocusNode _focusNodePassword = FocusNode();
   final String? email;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
   final _keyForm = GlobalKey<FormState>();
   final LoginController loginController = LoginController();
+
   Login({Key? key, this.email}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -48,35 +51,43 @@ class Login extends StatelessWidget {
             SizedBox(
               height: 20,
             ),
-            TextFormField(
-              controller: _emailController,
-              // initialValue: email != null ? email : null,
-              decoration: InputDecoration(hintText: 'Email'),
-              validator: (email) {
-                if (email != null) {
-                  if (!EmailValidator.validate(email)) {
-                    return "Please enter email";
-                  }
-                }
-                return null;
-              },
+            GetXWrapBuilder<LoginController>(
+              initController: loginController,
+              builder: (_) => TextFormField(
+                focusNode: _focusNodeEmail,
+                onFieldSubmitted: (v) {
+                  _focusNodePassword.requestFocus();
+                },
+                onChanged: (v) {
+                  loginController.warningEmail(v);
+                },
+                controller: _emailController,
+                decoration: InputDecoration(
+                    hintText: 'Email',
+                    errorText: loginController.warningEmailRx.value.isEmail
+                        ? null
+                        : "Please enter email"),
+              ),
             ),
             SizedBox(height: 30),
             GetXWrapBuilder<LoginController>(
                 builder: (_) => TextFormField(
-                      validator: (password) {
-                        if (password != null) {
-                          if (password.length < 6) {
-                            return "Please enter at least 6 characters";
-                          }
-                        }
-                        return null;
-                      },
+                      focusNode: _focusNodePassword,
                       controller: _passController,
+                      onChanged: (v) {
+                        loginController.warningPassword(v);
+                      },
+                      onFieldSubmitted: (v) {
+                        _submitForm();
+                      },
                       obscureText:
                           loginController.obscureTextRx.value.isObscureText,
                       decoration: InputDecoration(
                         hintText: 'Password',
+                        errorText:
+                            loginController.warningPasswordRx.value.isPassword
+                                ? null
+                                : "Please enter at least 6 characters",
                         suffixIcon: IconButton(
                           icon: Icon(Icons.visibility_off_outlined),
                           onPressed: () {
@@ -95,11 +106,7 @@ class Login extends StatelessWidget {
               child: MaterialButton(
                 color: Color(0xff7CB342),
                 onPressed: () {
-                  if (_keyForm.currentState != null &&
-                      _keyForm.currentState!.validate()) {
-                    loginController.login(
-                        _emailController.text, _passController.text);
-                  }
+                  _submitForm();
                 },
                 textColor: Colors.white,
                 child: Text("NEXT"),
@@ -109,5 +116,11 @@ class Login extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _submitForm() {
+    if (_keyForm.currentState != null && _keyForm.currentState!.validate()) {
+      loginController.login(_emailController.text, _passController.text);
+    }
   }
 }

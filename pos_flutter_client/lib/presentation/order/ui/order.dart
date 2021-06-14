@@ -16,8 +16,8 @@ class Order extends StatelessWidget {
   final OrderController orderController = OrderController()..getListOrders();
   final TicketCartController ticketCartController = TicketCartController();
   final String email;
-  final searchController = TextEditingController();
-
+  final _searchController = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
   Order({Key? key, required this.email}) : super(key: key);
 
   @override
@@ -310,9 +310,9 @@ class Order extends StatelessWidget {
 
   Widget _search(bool isVisible) {
     return TextField(
+      focusNode: _focusNode,
       textAlignVertical: TextAlignVertical.center,
-      autofocus: true,
-      controller: searchController,
+      controller: _searchController,
       decoration: InputDecoration(
           border: InputBorder.none,
           focusedBorder: InputBorder.none,
@@ -326,8 +326,9 @@ class Order extends StatelessWidget {
             color: Colors.grey,
             icon: Icon(Icons.close),
             onPressed: () {
+              _focusNode.unfocus();
               orderController.changeFillBarState();
-              searchController.text = "";
+              _searchController.text = "";
             },
           )),
       onChanged: (value) {
@@ -420,6 +421,7 @@ class Order extends StatelessWidget {
             child: IconButton(
               onPressed: () {
                 orderController.changeFillBarState();
+                _focusNode.requestFocus();
               },
               icon: Icon(Icons.search),
             ),

@@ -1,3 +1,4 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:pos_flutter_client/common/common.dart';
@@ -7,6 +8,9 @@ import 'package:pos_flutter_client/presentation/home/home_state.dart';
 import 'register_state.dart';
 
 class RegisterController extends GetxController {
+  var warningEmailRx = Rx<WarningEmailState>(WarningEmailState(isEmail: true));
+  var warningPasswordRx =
+      Rx<WarningPasswordState>(WarningPasswordState(isPassword: true));
   final authenticationController = Get.find<AuthenticationController>();
   var obscureTextRx =
       Rx<ObscureTextState>(ObscureTextState(isObscureText: true));
@@ -16,6 +20,16 @@ class RegisterController extends GetxController {
   void changeObscureText() {
     bool newObscureTextRx = !obscureTextRx.value.isObscureText;
     obscureTextRx.value = ObscureTextState(isObscureText: newObscureTextRx);
+  }
+
+  void warningEmail(String value) {
+    var isEmail = EmailValidator.validate(value);
+    warningEmailRx.value = WarningEmailState(isEmail: isEmail);
+  }
+
+  void warningPassword(String value) {
+    var isPassword = value.length >= 6;
+    warningPasswordRx.value = WarningPasswordState(isPassword: isPassword);
   }
 
   Future register(String email, String password) async {

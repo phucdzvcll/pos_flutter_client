@@ -1,13 +1,15 @@
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:pos_flutter_client/common/common.dart';
 import 'package:pos_flutter_client/presentation/register/controller/register_controller.dart';
 
 class Register extends StatelessWidget {
+  final FocusNode _focusNodeEmail = FocusNode()..requestFocus();
+  final FocusNode _focusNodePassword = FocusNode();
+  final _keyForm = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
-  final _keyForm = GlobalKey<FormState>();
   final RegisterController registerController = RegisterController();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -46,34 +48,43 @@ class Register extends StatelessWidget {
             SizedBox(
               height: 20,
             ),
-            TextFormField(
-              controller: _emailController,
-              decoration: InputDecoration(hintText: 'Email'),
-              validator: (email) {
-                if (email != null) {
-                  if (!EmailValidator.validate(email)) {
-                    return "Please enter email";
-                  }
-                }
-                return null;
-              },
+            GetXWrapBuilder<RegisterController>(
+              initController: registerController,
+              builder: (_) => TextFormField(
+                focusNode: _focusNodeEmail,
+                onFieldSubmitted: (v) {
+                  _focusNodePassword.requestFocus();
+                },
+                onChanged: (v) {
+                  registerController.warningEmail(v);
+                },
+                controller: _emailController,
+                decoration: InputDecoration(
+                    hintText: 'Email',
+                    errorText: registerController.warningEmailRx.value.isEmail
+                        ? null
+                        : "Please enter email"),
+              ),
             ),
             SizedBox(height: 30),
             GetXWrapBuilder<RegisterController>(
                 builder: (_) => TextFormField(
-                      validator: (password) {
-                        if (password != null) {
-                          if (password.length < 6) {
-                            return "Please enter at least 6 characters";
-                          }
-                        }
-                        return null;
-                      },
+                      focusNode: _focusNodePassword,
                       controller: _passController,
+                      onChanged: (v) {
+                        registerController.warningPassword(v);
+                      },
+                      onFieldSubmitted: (v) {
+                        _submitForm();
+                      },
                       obscureText:
                           registerController.obscureTextRx.value.isObscureText,
                       decoration: InputDecoration(
                         hintText: 'Password',
+                        errorText: registerController
+                                .warningPasswordRx.value.isPassword
+                            ? null
+                            : "Please enter at least 6 characters",
                         suffixIcon: IconButton(
                           icon: Icon(Icons.visibility_off_outlined),
                           onPressed: () {
@@ -92,11 +103,7 @@ class Register extends StatelessWidget {
               child: MaterialButton(
                 color: Color(0xff7CB342),
                 onPressed: () {
-                  if (_keyForm.currentState != null &&
-                      _keyForm.currentState!.validate()) {
-                    registerController.register(
-                        _emailController.text, _passController.text);
-                  }
+                  _submitForm();
                 },
                 textColor: Colors.white,
                 child: Text("NEXT"),
@@ -106,5 +113,11 @@ class Register extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _submitForm() {
+    if (_keyForm.currentState != null && _keyForm.currentState!.validate()) {
+      registerController.register(_emailController.text, _passController.text);
+    }
   }
 }
