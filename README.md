@@ -3,7 +3,7 @@ POS App
 ## Important ingredients 
 - [State Management BloC](https://bloclibrary.dev/#/)
 - [Dependency management Getx](https://pub.dev/packages/get#dependency-management)
-- [Multi language](https://pub.dev/packages/easy_localization)
+- [Multi language](https://pub.dev/packages/get#internationalization)
 - [Firebase](https://firebase.flutter.dev/)
 ## Plugin 
 
