@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pos_flutter_client/common/common.dart';
 import 'package:pos_flutter_client/presentation/register/controller/register_controller.dart';
 
@@ -15,7 +16,7 @@ class Register extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Create Account"),
+          title: Text("btn_register".tr),
         ),
         body: _body(),
       ),
@@ -63,7 +64,7 @@ class Register extends StatelessWidget {
                     hintText: 'Email',
                     errorText: registerController.warningEmailRx.value.isEmail
                         ? null
-                        : "Please enter email"),
+                        : "warning_email".tr),
               ),
             ),
             SizedBox(height: 30),
@@ -80,11 +81,11 @@ class Register extends StatelessWidget {
                       obscureText:
                           registerController.obscureTextRx.value.isObscureText,
                       decoration: InputDecoration(
-                        hintText: 'Password',
+                        hintText: 'password'.tr,
                         errorText: registerController
                                 .warningPasswordRx.value.isPassword
                             ? null
-                            : "Please enter at least 6 characters",
+                            : "warning_password".tr,
                         suffixIcon: IconButton(
                           icon: Icon(Icons.visibility_off_outlined),
                           onPressed: () {
@@ -106,7 +107,7 @@ class Register extends StatelessWidget {
                   _submitForm();
                 },
                 textColor: Colors.white,
-                child: Text("NEXT"),
+                child: Text("btn_register".tr),
               ),
             )
           ],

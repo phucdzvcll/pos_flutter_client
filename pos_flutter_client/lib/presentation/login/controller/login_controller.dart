@@ -42,9 +42,11 @@ class LoginController extends GetxController {
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        errorMessageRx.value = ErrorMessageState(errorMessage: e.code);
+        errorMessageRx.value =
+            ErrorMessageState(errorMessage: "user_not_found".tr);
       } else if (e.code == 'wrong-password') {
-        errorMessageRx.value = ErrorMessageState(errorMessage: e.code);
+        errorMessageRx.value =
+            ErrorMessageState(errorMessage: "wrong_password".tr);
       }
     } catch (e) {
       errorMessageRx.value = ErrorMessageState(errorMessage: e.toString());

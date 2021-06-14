@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pos_flutter_client/common/common.dart';
+import 'package:pos_flutter_client/common/switch_change_locale.dart';
 import 'package:pos_flutter_client/data/data.dart';
 import 'package:pos_flutter_client/data/remote/api_service.dart';
 import 'package:pos_flutter_client/domain/domain.dart';
@@ -11,15 +11,21 @@ import 'package:pos_flutter_client/presentation/home/controller/authentication_c
 import 'package:pos_flutter_client/presentation/home/home_state.dart';
 import 'package:pos_flutter_client/presentation/home/ui/home_page.dart';
 import 'package:pos_flutter_client/presentation/order/ui/order.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'utils/Translations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  FirebaseAuth.instance;
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  var isArabic = prefs.getBool(SwitchWidget().sharedLanguageCodeKey) ?? true;
   // DI
   _initDi();
 
-  runApp(MyApp());
+  runApp(MyApp(
+    isArabic: isArabic,
+  ));
 }
 
 void _initDi() {
@@ -46,6 +52,8 @@ void _initDi() {
 }
 
 class MyApp extends StatelessWidget {
+  final bool isArabic;
+
   final authenticationController = Get.find<AuthenticationController>()
     ..getAuthenticationState()
     ..authenticationRx.listen((authenticationState) {
@@ -54,9 +62,14 @@ class MyApp extends StatelessWidget {
       }
     });
 
+  MyApp({Key? key, required this.isArabic}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      translations: Messages(),
+      locale: isArabic ? Locale('en') : Locale('vi'),
+      fallbackLocale: Locale("en"),
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {

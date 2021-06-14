@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pos_flutter_client/common/common.dart';
 import 'package:pos_flutter_client/presentation/login/controller/login_controller.dart';
 
@@ -18,7 +19,7 @@ class Login extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Login"),
+          title: Text("btn_login".tr),
         ),
         body: _body(),
       ),
@@ -66,7 +67,7 @@ class Login extends StatelessWidget {
                     hintText: 'Email',
                     errorText: loginController.warningEmailRx.value.isEmail
                         ? null
-                        : "Please enter email"),
+                        : "warning_email".tr),
               ),
             ),
             SizedBox(height: 30),
@@ -83,11 +84,11 @@ class Login extends StatelessWidget {
                       obscureText:
                           loginController.obscureTextRx.value.isObscureText,
                       decoration: InputDecoration(
-                        hintText: 'Password',
+                        hintText: 'password'.tr,
                         errorText:
                             loginController.warningPasswordRx.value.isPassword
                                 ? null
-                                : "Please enter at least 6 characters",
+                                : "warning_password".tr,
                         suffixIcon: IconButton(
                           icon: Icon(Icons.visibility_off_outlined),
                           onPressed: () {
@@ -109,7 +110,7 @@ class Login extends StatelessWidget {
                   _submitForm();
                 },
                 textColor: Colors.white,
-                child: Text("NEXT"),
+                child: Text("btn_login".tr),
               ),
             )
           ],

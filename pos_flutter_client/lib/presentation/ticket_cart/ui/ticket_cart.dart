@@ -21,7 +21,7 @@ class TicKetCart extends StatelessWidget {
           title: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text("Ticket"),
+              Text("btn_ticket".tr),
               SizedBox(
                 width: 10,
               ),
@@ -134,7 +134,7 @@ class TicKetCart extends StatelessWidget {
     );
   }
 
-  var listItemDropDown = ["Dine in", "one", "two", "three"];
+  var listItemDropDown = ["dine_in".tr, "take_away".tr];
 
   Widget _dropDown() {
     return DropdownButton<String>(
@@ -152,7 +152,7 @@ class TicKetCart extends StatelessWidget {
           Icons.expand_more_outlined,
         ),
       ),
-      value: "Dine in",
+      value: "dine_in".tr,
       iconSize: 24,
       style: TextStyle(color: Colors.black),
       isExpanded: true,
@@ -236,7 +236,7 @@ class TicKetCart extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      "Total",
+                      "total".tr,
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -270,7 +270,7 @@ class TicKetCart extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Expanded(
-                    child: Text("Tax"),
+                    child: Text("tax".tr),
                   ),
                   Text(tax.formatDouble()),
                 ],
@@ -297,7 +297,7 @@ class TicKetCart extends StatelessWidget {
               ),
               onPressed: () {},
               child: Text(
-                "SAVE",
+                "btn_save".tr,
                 style: TextStyle(color: Colors.white, fontSize: 16),
               ),
             ),
@@ -318,11 +318,11 @@ class TicKetCart extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "CHARGE",
+                  "btn_charge".tr,
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
                 Text(
-                  totalPrice.toString(),
+                  totalPrice.formatDouble().toString(),
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 )
               ],

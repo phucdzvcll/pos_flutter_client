@@ -36,7 +36,7 @@ class EditTicketCart extends StatelessWidget {
                 Get.back();
               },
               child: Text(
-                "SAVE",
+                "btn_save".tr,
                 style: TextStyle(color: Colors.green),
               ),
             ),
@@ -65,7 +65,7 @@ class EditTicketCart extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.only(top: 30, left: 10, right: 10),
             child: Text(
-              "Quantity",
+              "quantity_label".tr,
               style: TextStyle(color: Colors.green, fontSize: 14),
             ),
           ),
@@ -118,7 +118,7 @@ class EditTicketCart extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 20),
             child: Text(
-              "Comment",
+              "comment_label".tr,
               textAlign: TextAlign.left,
               style: TextStyle(color: Colors.green, fontSize: 14),
             ),
@@ -128,7 +128,7 @@ class EditTicketCart extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 10),
           child: TextField(
             controller: commentController,
-            decoration: InputDecoration(hintText: "Enter your comment"),
+            decoration: InputDecoration(hintText: "comment".tr),
             onChanged: (value) {
               var newTicket = ticketCartController
                   .editTicketStateRx.value.ticket
