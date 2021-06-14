@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart' as easyLocalization;
 import 'package:flutter/material.dart';
 import 'package:pos_flutter_client/common/common.dart';
+import 'package:pos_flutter_client/generated/locale_keys.g.dart';
 import 'package:pos_flutter_client/presentation/register/controller/register_controller.dart';
 
 class Register extends StatelessWidget {
@@ -15,7 +17,7 @@ class Register extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Create Account"),
+          title: Text(easyLocalization.tr(LocaleKeys.btn_register)),
         ),
         body: _body(),
       ),
@@ -63,7 +65,7 @@ class Register extends StatelessWidget {
                     hintText: 'Email',
                     errorText: registerController.warningEmailRx.value.isEmail
                         ? null
-                        : "Please enter email"),
+                        : easyLocalization.tr(LocaleKeys.warning_email)),
               ),
             ),
             SizedBox(height: 30),
@@ -80,11 +82,11 @@ class Register extends StatelessWidget {
                       obscureText:
                           registerController.obscureTextRx.value.isObscureText,
                       decoration: InputDecoration(
-                        hintText: 'Password',
+                        hintText: easyLocalization.tr(LocaleKeys.password),
                         errorText: registerController
                                 .warningPasswordRx.value.isPassword
                             ? null
-                            : "Please enter at least 6 characters",
+                            : easyLocalization.tr(LocaleKeys.warning_password),
                         suffixIcon: IconButton(
                           icon: Icon(Icons.visibility_off_outlined),
                           onPressed: () {
@@ -106,7 +108,7 @@ class Register extends StatelessWidget {
                   _submitForm();
                 },
                 textColor: Colors.white,
-                child: Text("NEXT"),
+                child: Text(easyLocalization.tr(LocaleKeys.btn_register)),
               ),
             )
           ],

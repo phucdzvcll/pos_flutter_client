@@ -1,7 +1,9 @@
+import 'package:easy_localization/easy_localization.dart' as easyLocalization;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pos_flutter_client/common/common.dart';
+import 'package:pos_flutter_client/generated/locale_keys.g.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_controller.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_state.dart';
 
@@ -36,7 +38,7 @@ class EditTicketCart extends StatelessWidget {
                 Get.back();
               },
               child: Text(
-                "SAVE",
+                easyLocalization.tr(LocaleKeys.btn_save),
                 style: TextStyle(color: Colors.green),
               ),
             ),
@@ -65,7 +67,7 @@ class EditTicketCart extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.only(top: 30, left: 10, right: 10),
             child: Text(
-              "Quantity",
+              easyLocalization.tr(LocaleKeys.quantity_label),
               style: TextStyle(color: Colors.green, fontSize: 14),
             ),
           ),
@@ -118,7 +120,7 @@ class EditTicketCart extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 20),
             child: Text(
-              "Comment",
+              easyLocalization.tr(LocaleKeys.comment_label),
               textAlign: TextAlign.left,
               style: TextStyle(color: Colors.green, fontSize: 14),
             ),
@@ -128,7 +130,8 @@ class EditTicketCart extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 10),
           child: TextField(
             controller: commentController,
-            decoration: InputDecoration(hintText: "Enter your comment"),
+            decoration: InputDecoration(
+                hintText: easyLocalization.tr(LocaleKeys.comment)),
             onChanged: (value) {
               var newTicket = ticketCartController
                   .editTicketStateRx.value.ticket

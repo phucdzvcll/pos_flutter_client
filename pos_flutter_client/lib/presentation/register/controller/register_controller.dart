@@ -1,7 +1,9 @@
+import 'package:easy_localization/easy_localization.dart' as easyLocalization;
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:pos_flutter_client/common/common.dart';
+import 'package:pos_flutter_client/generated/locale_keys.g.dart';
 import 'package:pos_flutter_client/presentation/home/controller/authentication_controller.dart';
 import 'package:pos_flutter_client/presentation/home/home_state.dart';
 
@@ -43,10 +45,10 @@ class RegisterController extends GetxController {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         errorMessageRx.value = ErrorMessageState(
-            errorMessage: 'The password provided is too weak.');
+            errorMessage: easyLocalization.tr(LocaleKeys.password_weak));
       } else if (e.code == 'email-already-in-use') {
         errorMessageRx.value = ErrorMessageState(
-            errorMessage: 'The account already exists for that email.');
+            errorMessage: easyLocalization.tr(LocaleKeys.email_already_in_use));
       }
     } catch (e) {
       print(e);

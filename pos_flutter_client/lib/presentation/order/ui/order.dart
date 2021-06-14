@@ -1,8 +1,11 @@
+import 'package:easy_localization/easy_localization.dart' as easyLocalization;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:pos_flutter_client/common/common.dart';
+import 'package:pos_flutter_client/common/switch_change_locale.dart';
+import 'package:pos_flutter_client/generated/locale_keys.g.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_controller.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_state.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/ui/ticket_cart.dart';
@@ -18,6 +21,7 @@ class Order extends StatelessWidget {
   final String email;
   final _searchController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
+
   Order({Key? key, required this.email}) : super(key: key);
 
   @override
@@ -56,40 +60,52 @@ class Order extends StatelessWidget {
     return Drawer(
       child: ListView(
         children: <Widget>[
-          DecoratedBox(
-            decoration: BoxDecoration(color: Colors.green),
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
-              child: SizedBox(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      email,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24),
+          Stack(
+            children: [
+              SizedBox(
+                width: double.infinity,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(color: Colors.green),
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
+                    child: SizedBox(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            email,
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 24),
+                          ),
+                          Text(
+                            'POS 1',
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
+                          Text(
+                            'p5k',
+                            style: TextStyle(color: Colors.white, fontSize: 14),
+                          ),
+                        ],
+                      ),
                     ),
-                    Text(
-                      'POS 1',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
-                    ),
-                    Text(
-                      'p5k',
-                      style: TextStyle(color: Colors.white, fontSize: 14),
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            ),
+              Positioned(
+                right: 10,
+                bottom: 0,
+                child: SwitchWidget(),
+              )
+            ],
           ),
           ListTile(
             leading: Icon(
               Icons.shopping_basket,
             ),
-            title: Text('Sale'),
+            title: Text(easyLocalization.tr(LocaleKeys.sale)),
             onTap: () {
               Get.back();
             },
@@ -98,7 +114,7 @@ class Order extends StatelessWidget {
             leading: Icon(
               Icons.receipt,
             ),
-            title: Text('Receipts'),
+            title: Text(easyLocalization.tr(LocaleKeys.receipts)),
             onTap: () {
               Get.back();
             },
@@ -107,14 +123,14 @@ class Order extends StatelessWidget {
             leading: Icon(
               Icons.list,
             ),
-            title: Text('Items'),
+            title: Text(easyLocalization.tr(LocaleKeys.items)),
             onTap: () {
               Get.back();
             },
           ),
           ListTile(
             leading: Icon(Icons.settings),
-            title: Text('Setting'),
+            title: Text(easyLocalization.tr(LocaleKeys.setting)),
             onTap: () {
               Get.back();
             },
@@ -126,7 +142,7 @@ class Order extends StatelessWidget {
             leading: Icon(
               Icons.insert_chart,
             ),
-            title: Text('Black office'),
+            title: Text(easyLocalization.tr(LocaleKeys.black_office)),
             onTap: () {
               Get.back();
             },
@@ -135,7 +151,7 @@ class Order extends StatelessWidget {
             leading: Icon(
               Icons.redeem,
             ),
-            title: Text('App'),
+            title: Text(easyLocalization.tr(LocaleKeys.app)),
             onTap: () {
               Get.back();
             },
@@ -144,7 +160,7 @@ class Order extends StatelessWidget {
             leading: Icon(
               Icons.help_outline,
             ),
-            title: Text('Help'),
+            title: Text(easyLocalization.tr(LocaleKeys.help)),
             onTap: () {
               Get.back();
             },
@@ -156,7 +172,7 @@ class Order extends StatelessWidget {
             leading: Icon(
               Icons.logout_outlined,
             ),
-            title: Text('Logout'),
+            title: Text(easyLocalization.tr(LocaleKeys.logout)),
             onTap: () {
               orderController.logout();
             },
@@ -178,7 +194,7 @@ class Order extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text("Ticket"),
+          Text(easyLocalization.tr(LocaleKeys.btn_ticket)),
           SizedBox(
             width: 10,
           ),
@@ -320,7 +336,7 @@ class Order extends StatelessWidget {
           errorBorder: InputBorder.none,
           disabledBorder: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(horizontal: 15),
-          hintText: "Search",
+          hintText: easyLocalization.tr(LocaleKeys.search),
           hintStyle: TextStyle(color: Colors.grey),
           suffixIcon: IconButton(
             color: Colors.grey,
@@ -446,7 +462,7 @@ class Order extends StatelessWidget {
               ),
               onPressed: () {},
               child: Text(
-                "SAVE",
+                easyLocalization.tr(LocaleKeys.btn_save),
                 style: TextStyle(color: Colors.white, fontSize: 16),
               ),
             ),
@@ -467,7 +483,7 @@ class Order extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "CHARGE",
+                    easyLocalization.tr(LocaleKeys.btn_charge),
                     style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
                   Text(

@@ -1,8 +1,10 @@
+import 'package:easy_localization/easy_localization.dart' as easyLocalization;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:pos_flutter_client/common/common.dart';
+import 'package:pos_flutter_client/generated/locale_keys.g.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/controller/model/ticket.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/controller/ticket_cart_controller.dart';
 import 'package:pos_flutter_client/presentation/ticket_cart/ui/edit_ticket_cart.dart';
@@ -21,7 +23,7 @@ class TicKetCart extends StatelessWidget {
           title: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text("Ticket"),
+              Text(easyLocalization.tr(LocaleKeys.btn_ticket)),
               SizedBox(
                 width: 10,
               ),
@@ -134,7 +136,10 @@ class TicKetCart extends StatelessWidget {
     );
   }
 
-  var listItemDropDown = ["Dine in", "one", "two", "three"];
+  final listItemDropDown = [
+    easyLocalization.tr(LocaleKeys.dine_in),
+    easyLocalization.tr(LocaleKeys.take_away)
+  ];
 
   Widget _dropDown() {
     return DropdownButton<String>(
@@ -152,7 +157,7 @@ class TicKetCart extends StatelessWidget {
           Icons.expand_more_outlined,
         ),
       ),
-      value: "Dine in",
+      value: easyLocalization.tr(LocaleKeys.dine_in),
       iconSize: 24,
       style: TextStyle(color: Colors.black),
       isExpanded: true,
@@ -236,7 +241,7 @@ class TicKetCart extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      "Total",
+                      easyLocalization.tr(LocaleKeys.total),
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -270,7 +275,7 @@ class TicKetCart extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Expanded(
-                    child: Text("Tax"),
+                    child: Text(easyLocalization.tr(LocaleKeys.tax)),
                   ),
                   Text(tax.formatDouble()),
                 ],
@@ -297,7 +302,7 @@ class TicKetCart extends StatelessWidget {
               ),
               onPressed: () {},
               child: Text(
-                "SAVE",
+                easyLocalization.tr(LocaleKeys.btn_register),
                 style: TextStyle(color: Colors.white, fontSize: 16),
               ),
             ),
@@ -318,11 +323,11 @@ class TicKetCart extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "CHARGE",
+                  easyLocalization.tr(LocaleKeys.btn_charge),
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
                 Text(
-                  totalPrice.toString(),
+                  totalPrice.formatDouble().toString(),
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 )
               ],

@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,14 +12,29 @@ import 'package:pos_flutter_client/presentation/home/home_state.dart';
 import 'package:pos_flutter_client/presentation/home/ui/home_page.dart';
 import 'package:pos_flutter_client/presentation/order/ui/order.dart';
 
+import 'generated/codegen_loader.g.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  FirebaseAuth.instance;
+  await EasyLocalization.ensureInitialized();
   // DI
   _initDi();
 
-  runApp(MyApp());
+  runApp(
+    GetMaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.green,
+      ),
+      home: EasyLocalization(
+          supportedLocales: [Locale('en'), Locale('vi')],
+          path: 'translations',
+          fallbackLocale: Locale('en'),
+          assetLoader: CodegenLoader(),
+          child: MyApp()),
+    ),
+  );
 }
 
 void _initDi() {
@@ -56,8 +71,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
       initialRoute: '/',
       routes: {
         '/': (context) => GetXWrapBuilder(

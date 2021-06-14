@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart' as easyLocalization;
 import 'package:flutter/material.dart';
 import 'package:pos_flutter_client/common/common.dart';
+import 'package:pos_flutter_client/generated/locale_keys.g.dart';
 import 'package:pos_flutter_client/presentation/login/controller/login_controller.dart';
 
 class Login extends StatelessWidget {
@@ -18,7 +20,7 @@ class Login extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Login"),
+          title: Text(easyLocalization.tr(LocaleKeys.btn_login)),
         ),
         body: _body(),
       ),
@@ -66,7 +68,7 @@ class Login extends StatelessWidget {
                     hintText: 'Email',
                     errorText: loginController.warningEmailRx.value.isEmail
                         ? null
-                        : "Please enter email"),
+                        : easyLocalization.tr(LocaleKeys.warning_email)),
               ),
             ),
             SizedBox(height: 30),
@@ -83,11 +85,11 @@ class Login extends StatelessWidget {
                       obscureText:
                           loginController.obscureTextRx.value.isObscureText,
                       decoration: InputDecoration(
-                        hintText: 'Password',
-                        errorText:
-                            loginController.warningPasswordRx.value.isPassword
-                                ? null
-                                : "Please enter at least 6 characters",
+                        hintText: easyLocalization.tr(LocaleKeys.password),
+                        errorText: loginController
+                                .warningPasswordRx.value.isPassword
+                            ? null
+                            : easyLocalization.tr(LocaleKeys.warning_password),
                         suffixIcon: IconButton(
                           icon: Icon(Icons.visibility_off_outlined),
                           onPressed: () {
@@ -109,7 +111,7 @@ class Login extends StatelessWidget {
                   _submitForm();
                 },
                 textColor: Colors.white,
-                child: Text("NEXT"),
+                child: Text(easyLocalization.tr(LocaleKeys.btn_login)),
               ),
             )
           ],
