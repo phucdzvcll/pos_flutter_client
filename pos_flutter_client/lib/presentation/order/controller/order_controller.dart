@@ -13,6 +13,7 @@ class OrderController extends GetxController {
       selectedCategoryId: 0));
   List<Item> _items = [];
   List<Category> _categories = [];
+  int _currentCategoryId = 0;
 
   void getListOrders() async {
     _items.clear();
@@ -43,8 +44,10 @@ class OrderController extends GetxController {
 
   void fillByCategory(int id) async {
     if (id == 0) {
+      _currentCategoryId = 0;
       orderStateRx.value = SuccessOrderState(items: _items.toList());
     } else {
+      _currentCategoryId = id;
       orderStateRx.value = SuccessOrderState(
           items: _items.where((item) => item.categoryId == id).toList());
     }
@@ -53,22 +56,26 @@ class OrderController extends GetxController {
   }
 
   void fillBySearch(String value) {
-    orderStateRx.value = SuccessOrderState(
-        items: _items
-            .where(
-                (item) => item.name.toLowerCase().contains(value.toLowerCase()))
-            .toList());
+    if (_currentCategoryId == 0) {
+      orderStateRx.value = SuccessOrderState(
+          items: _items
+              .where((item) => item.name.toLowerCase().contains(value))
+              .toList());
+    } else {
+      orderStateRx.value = SuccessOrderState(
+          items: _items
+              .where((item) => (item.categoryId == _currentCategoryId &&
+                  item.name.toLowerCase().contains(value)))
+              .toList());
+    }
   }
 
   void changeFillBarState() {
     if (fillBarRX.value is FillState) {
       fillBarRX.value = SearchState();
-      orderStateRx.value = SuccessOrderState(items: _items);
     } else {
       fillBarRX.value = FillState();
-      orderStateRx.value = SuccessOrderState(items: _items);
-      categoryRx.value =
-          CategoriesState(categories: _categories, selectedCategoryId: 0);
+      fillByCategory(_currentCategoryId);
     }
   }
 
